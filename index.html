@@ -850,6 +850,161 @@ var G = {
     plotTab: "etaper"
 };
 
+function visInstruktioner() {
+    R(
+    '<h2>Instruktioner</h2>' +
+    '<div class="box">' +
+        '<h3>Grundidé</h3>' +
+        '<p>Du kører op til 10 sæsoner som professionel cykelrytter. Hver sæson vælger du 1 eller 2 Grand Tours at køre: Giro d\'Italia, Tour de France og/eller Vuelta a España.</p>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Sæsonstruktur</h3>' +
+        '<ul style="margin-left:18px;list-style:disc;font-size:14px;line-height:1.6">' +
+            '<li>Vælg 1 eller 2 Grand Tours per sæson</li>' +
+            '<li>Løbene køres i rækkefølge: Giro (maj) → Tour (juli) → Vuelta (aug-sep)</li>' +
+            '<li>Kører du 2 løb, starter det andet med reduceret energi og restitution</li>' +
+            '<li>Bonuspoint fordeles efter sæsonen er slut</li>' +
+        '</ul>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Styring under etaper</h3>' +
+        '<ul style="margin-left:18px;list-style:disc;font-size:14px;line-height:1.6">' +
+            '<li><strong>A</strong> – Accelerer / angrib</li>' +
+            '<li><strong>U</strong> – Sig JA til udbrud</li>' +
+            '<li><strong>N</strong> – Sig NEJ til udbrud</li>' +
+            '<li><strong>P</strong> – Pause / fortsæt</li>' +
+        '</ul>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Grupper på etapen</h3>' +
+        '<ul style="margin-left:18px;list-style:disc;font-size:14px;line-height:1.6">' +
+            '<li><strong>Feltet</strong> – Hovedgruppen</li>' +
+            '<li><strong>Udbrud / Forfølgere</strong> – Foran feltet</li>' +
+            '<li><strong>Bagud / Gruppetto</strong> – Bagved feltet</li>' +
+        '</ul>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Energi og træthed</h3>' +
+        '<ul style="margin-left:18px;list-style:disc;font-size:14px;line-height:1.6">' +
+            '<li>Angreb og stigninger koster energi</li>' +
+            '<li>Løber du tør, ryger du i gruppetto</li>' +
+            '<li>Kører du 2 Grand Tours, er du træt i det andet løb</li>' +
+        '</ul>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Trøjer per Grand Tour</h3>' +
+        '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:8px">' +
+            '<tr style="border-bottom:1px solid #333">' +
+                '<th style="text-align:left;padding:4px;color:#888">Trøje</th>' +
+                '<th style="text-align:center;padding:4px;color:#ff69b4">Giro</th>' +
+                '<th style="text-align:center;padding:4px;color:#ff0">Tour</th>' +
+                '<th style="text-align:center;padding:4px;color:#f44">Vuelta</th>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">GC (samlet)</td>' +
+                '<td style="text-align:center;padding:4px">🩷 Rosa</td>' +
+                '<td style="text-align:center;padding:4px">🟡 Gul</td>' +
+                '<td style="text-align:center;padding:4px">🔴 Rød</td>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">Sprint</td>' +
+                '<td style="text-align:center;padding:4px">🟣 Cyklamen</td>' +
+                '<td style="text-align:center;padding:4px">🟢 Grøn</td>' +
+                '<td style="text-align:center;padding:4px">🟢 Grøn</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td style="padding:4px">Bjerg</td>' +
+                '<td style="text-align:center;padding:4px">🔵 Blå</td>' +
+                '<td style="text-align:center;padding:4px">🔴 Prikket</td>' +
+                '<td style="text-align:center;padding:4px">🔵 Prikket</td>' +
+            '</tr>' +
+        '</table>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Bonuspoint (per sæson)</h3>' +
+        '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:8px">' +
+            '<tr style="border-bottom:1px solid #333">' +
+                '<th style="text-align:left;padding:4px;color:#888">Bonus</th>' +
+                '<th style="text-align:center;padding:4px;color:#ff69b4">Giro</th>' +
+                '<th style="text-align:center;padding:4px;color:#ff0">Tour</th>' +
+                '<th style="text-align:center;padding:4px;color:#f44">Vuelta</th>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">GC 1. plads</td>' +
+                '<td style="text-align:center;padding:4px">8</td>' +
+                '<td style="text-align:center;padding:4px">10</td>' +
+                '<td style="text-align:center;padding:4px">7</td>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">GC 2. plads</td>' +
+                '<td style="text-align:center;padding:4px">5</td>' +
+                '<td style="text-align:center;padding:4px">7</td>' +
+                '<td style="text-align:center;padding:4px">3</td>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">GC 3. plads</td>' +
+                '<td style="text-align:center;padding:4px">3</td>' +
+                '<td style="text-align:center;padding:4px">5</td>' +
+                '<td style="text-align:center;padding:4px">2</td>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">Trøje (1. plads)</td>' +
+                '<td style="text-align:center;padding:4px">2/trøje</td>' +
+                '<td style="text-align:center;padding:4px">3/trøje</td>' +
+                '<td style="text-align:center;padding:4px">1/trøje</td>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">Etapesejr</td>' +
+                '<td style="text-align:center;padding:4px">1/sejr</td>' +
+                '<td style="text-align:center;padding:4px">1/sejr</td>' +
+                '<td style="text-align:center;padding:4px">1/sejr</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td style="padding:4px">Gennemføre</td>' +
+                '<td style="text-align:center;padding:4px">0</td>' +
+                '<td style="text-align:center;padding:4px">2</td>' +
+                '<td style="text-align:center;padding:4px">0</td>' +
+            '</tr>' +
+        '</table>' +
+    '</div>' +
+
+    '<div class="box">' +
+        '<h3>Træthed mellem Grand Tours</h3>' +
+        '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:8px">' +
+            '<tr style="border-bottom:1px solid #333">' +
+                '<th style="text-align:left;padding:4px;color:#888">Kombination</th>' +
+                '<th style="text-align:center;padding:4px;color:#888">Startenergi</th>' +
+                '<th style="text-align:center;padding:4px;color:#888">Restitution</th>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">Giro → Tour</td>' +
+                '<td style="text-align:center;padding:4px;color:#f80">80%</td>' +
+                '<td style="text-align:center;padding:4px;color:#f80">92%</td>' +
+            '</tr>' +
+            '<tr style="border-bottom:1px solid #222">' +
+                '<td style="padding:4px">Giro → Vuelta</td>' +
+                '<td style="text-align:center;padding:4px;color:#0f0">90%</td>' +
+                '<td style="text-align:center;padding:4px;color:#0f0">97%</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td style="padding:4px">Tour → Vuelta</td>' +
+                '<td style="text-align:center;padding:4px;color:#f44">75%</td>' +
+                '<td style="text-align:center;padding:4px;color:#f44">90%</td>' +
+            '</tr>' +
+        '</table>' +
+    '</div>' +
+
+    '<div class="ctrls">' +
+        '<button class="btn btn-big btn-y" onclick="intro()">← Tilbage</button>' +
+    '</div>');
+}
+	
 // ========== GT TEMA-FUNKTIONER ==========
 
 function getGT() {
@@ -1974,8 +2129,8 @@ function intro() {
     
     R('<div style="text-align:center;padding:20px 0">' +
         getInstallBannerHtml() +
-        '<div style="font-size:60px;margin-bottom:5px">🇮🇹🚴‍♂️🇫🇷🏔️🇪🇸</div>' +
-        '<h1 style="font-size:38px;margin:0;letter-spacing:3px">GRAND TOURS</h1>' +
+        '<div style="font-size:36px;margin-bottom:5px">🇮🇹🚴‍♂️🇫🇷🏔️🇪🇸</div>' +
+        '<h1 style="font-size:42px;margin:0;letter-spacing:3px">LES GRAND TOURS</h1>' +
         '<div style="font-size:14px;color:#888;margin-top:5px">Giro d\'Italia · Tour de France · Vuelta a España</div>' +
         '<div style="margin-top:10px">' +
             '<span style="display:inline-block;width:12px;height:12px;background:#ff69b4;border-radius:50%;margin:0 4px"></span>' +
