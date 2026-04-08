@@ -553,7 +553,7 @@ var TEAMS = {
         { n: "Kim Heiduk", gc: 58, bj: 66, sp: 52, tt: 74, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
     ]},
     "Soudal Quick-Step": { abbr: "SOQ", clr: "#3366ff", r: [
-        { n: "Remco Evenepoel", gc: 92, bj: 85, sp: 68, tt: 97, ud: 88, re: 84, fl: 90, pri: "tdf", pref: ["tdf"] },
+        { n: "Remco Evenepoel", gc: 92, bj: 85, sp: 68, tt: 97, ud: 88, re: 84, fl: 90, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Mikel Landa", gc: 82, bj: 88, sp: 44, tt: 76, ud: 84, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Julian Alaphilippe", gc: 70, bj: 80, sp: 78, tt: 70, ud: 76, re: 72, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
         { n: "Tim Merlier", gc: 40, bj: 30, sp: 94, tt: 60, ud: 74, re: 80, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
@@ -567,7 +567,7 @@ var TEAMS = {
         { n: "Paul Magnier", gc: 42, bj: 36, sp: 88, tt: 68, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] }
     ]},
     "Red Bull BORA-hansgrohe": { abbr: "RBH", clr: "#00d84f", r: [
-        { n: "Primož Roglič", gc: 94, bj: 90, sp: 60, tt: 90, ud: 86, re: 76, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Primož Roglič", gc: 94, bj: 90, sp: 60, tt: 90, ud: 86, re: 76, fl: 80, pri: "giro", pref: ["giro","tdf","vuelta"] },
         { n: "Aleksandr Vlasov", gc: 84, bj: 86, sp: 48, tt: 80, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Jai Hindley", gc: 82, bj: 88, sp: 44, tt: 76, ud: 88, re: 82, fl: 70, pri: "giro", pref: ["giro","tdf"] },
         { n: "Sam Bennett", gc: 34, bj: 28, sp: 92, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
@@ -1102,7 +1102,19 @@ function bestemAIGTdeltagelse(saesonNr) {
                     gts.push(sekundaer);
                 }
             }
+			
+            // Wildcard: 10% chance for at Pogačar/Vingegaard
+            // dukker op i en uventet GT
+            if (r.gc >= 95 && Math.random() < 0.50) {
+                var alleGT = ["giro", "tdf", "vuelta"];
+                var tilfaeldig = alleGT[ri(0, 2)];
+                if (gts.indexOf(tilfaeldig) < 0) {
+                    gts.push(tilfaeldig);
+                }
+            }
             
+            // Ingen rytter kører alle 3
+            if (gts.length > 2) gts = gts.slice(0, 2);
             // Ingen rytter kører alle 3
             if (gts.length > 2) gts = gts.slice(0, 2);
             
@@ -1128,16 +1140,11 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
         var team = TEAMS[holdNavn];
         var trup = vaelgHoldtrup(holdNavn, gtId, G.saeson);
         
+        // Trup er allerede de 8 bedst egnede - brug dem ALLE
         for (var ri2 = 0; ri2 < trup.length; ri2++) {
             var x = trup[ri2];
             var erSpillerHold = (holdNavn === spillerHoldNavn);
             var erSpiller = (erSpillerHold && x.n === spillerOrigNavn);
-            
-            // Check om AI-rytteren kører denne GT
-            if (!erSpiller) {
-                var aiGTs = G.aiRytterGT[x.n];
-                if (aiGTs && aiGTs.indexOf(gtId) < 0) continue; // Kører ikke denne GT
-            }
             
             var r = {
                 navn: erSpiller ? G.navn : x.n,
@@ -1172,7 +1179,7 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
                 r.fl = G.spiller.fl;
             }
             
-            // Træthed fra tidligere GT i sæsonen
+            // Træthed for spilleren fra tidligere GT i sæsonen
             if (erSpiller && G.aktuelGTIdx > 0) {
                 var tidligereGT = G.valgteGT[G.aktuelGTIdx - 1];
                 var key = tidligereGT + "_" + gtId;
@@ -1182,9 +1189,9 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
                 }
             }
             // AI-ryttere der kører 2. GT: reduceret energi
-            else if (!erSpiller && G.aiRytterGT[x.n]) {
+            else if (!erSpiller) {
                 var aiGTs = G.aiRytterGT[x.n];
-                if (aiGTs.length >= 2) {
+                if (aiGTs && aiGTs.length >= 2) {
                     var gtOrdre = ["giro","tdf","vuelta"];
                     var aktueltIdx = gtOrdre.indexOf(gtId);
                     for (var gi = 0; gi < aiGTs.length; gi++) {
