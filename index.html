@@ -2150,9 +2150,8 @@ function gemSpil(etapeFaerdig) {
 }
 
 function hentSpil() {
+    // KUN læs fra den nye save-key
     var saved = localStorage.getItem('grandToursSave');
-    // Fallback til gammel save-key
-    if (!saved) saved = localStorage.getItem('tourDeFranceSave');
     if (!saved) return null;
     
     try {
@@ -2165,12 +2164,10 @@ function hentSpil() {
 
 function sletGemtSpil() {
     localStorage.removeItem('grandToursSave');
-    localStorage.removeItem('tourDeFranceSave'); // Ryd gammel key også
 }
 
 function harGemtSpil() {
-    return localStorage.getItem('grandToursSave') !== null || 
-           localStorage.getItem('tourDeFranceSave') !== null;
+    return localStorage.getItem('grandToursSave') !== null;
 }
 
 function indlaesGemtSpil() {
@@ -2179,11 +2176,8 @@ function indlaesGemtSpil() {
     
     var CURRENT_VERSION = 3;
     if (!saveData.version || saveData.version < CURRENT_VERSION) {
-        // Gammelt v2 save: Migrer til v3
-        if (saveData.version === 2) {
-            return migrerV2TilV3(saveData);
-        }
-        console.log('For gammelt save format - sletter');
+        // Gammelt format (inkl. LeTour v2) - kan ikke bruges
+        console.log('Inkompatibelt save format (v' + (saveData.version || '?') + ') - sletter');
         sletGemtSpil();
         return false;
     }
@@ -2235,63 +2229,6 @@ function indlaesGemtSpil() {
         if (r.energi > maxE) r.energi = maxE;
         if (r.energi < 0) r.energi = 0;
     }
-    
-    if (saveData.etapeFaerdig) {
-        if (G.enr >= 20) {
-            G.enr = 20;
-            return 'slut';
-        } else {
-            G.enr++;
-        }
-    }
-    
-    return true;
-}
-
-// Migrer v2 save (originalt LeTour) til v3 (GrandTours)
-function migrerV2TilV3(saveData) {
-    console.log('Migrerer v2 save til v3 format');
-    
-    G.navn = saveData.navn;
-    G.saeson = saveData.tourNr || 1;
-    G.tourNr = G.saeson;
-    G.enr = saveData.enr;
-    G.stilTab = saveData.stilTab || "gc";
-    G.sprPts = saveData.sprPts;
-    G.bjgPts = saveData.bjgPts;
-    G.etaper = saveData.etaper;
-    G.svaerhed = saveData.svaerhed || "normal";
-    ETAPE_HISTORIK = saveData.etapeHistorik || [];
-    G.bonusPoint = saveData.bonusPoint || 0;
-    
-    // Antag det var Tour de France
-    G.valgteGT = ["tdf"];
-    G.aktuelGTIdx = 0;
-    G.aktuelGT = "tdf";
-    G.saesonResultater = [];
-    G.karriereHistorik = [];
-    G.aiRytterGT = {};
-    
-    setGTTema("tdf");
-    
-    G.ryttere = [];
-    for (var i = 0; i < saveData.ryttere.length; i++) {
-        var r = saveData.ryttere[i];
-        G.ryttere.push(r);
-        if (r.sp) G.spiller = G.ryttere[G.ryttere.length - 1];
-    }
-    
-    for (var i = 0; i < G.ryttere.length; i++) {
-        var r = G.ryttere[i];
-        if (typeof r.energi !== "number") continue;
-        var maxE = getMaxEnergi(r);
-        if (r.energi > maxE) r.energi = maxE;
-        if (r.energi < 0) r.energi = 0;
-    }
-    
-    // Gem i nyt format
-    gemSpil(saveData.etapeFaerdig);
-    sletGemtSpil(); // Slet gamle
     
     if (saveData.etapeFaerdig) {
         if (G.enr >= 20) {
