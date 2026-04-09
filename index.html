@@ -1468,8 +1468,7 @@ function startGrandTour() {
     var gt = getGT();
     var html = '<div style="text-align:center;padding:20px 0">' +
         '<div style="font-size:50px">' + gt.emoji + '🚴‍♂️🏔️🚴‍♂️' + gt.emoji + '</div>' +
-        '<h1 style="color:' + gt.primary + '">' + gt.navn.toUpperCase() + '</h1>' +
-        '<div style="font-size:24px;color:' + gt.primary + '">' + gt.aar() + '</div>' +
+        '<h1 style="color:' + gt.primary + '">' + gt.navn.toUpperCase() + ' ' + gt.aar() + '</h1>' +
         (G.valgteGT.length > 1 ? '<div style="color:#888;font-size:12px;margin-top:5px">Løb ' + (G.aktuelGTIdx + 1) + ' af ' + G.valgteGT.length + ' denne sæson</div>' : '') +
     '</div>';
     
@@ -1489,7 +1488,7 @@ function startGrandTour() {
     
     html += '<div class="box">' +
         '<h3>' + G.navn + ' - ' + G.spiller.hold + '</h3>' +
-        '<p style="color:#888;font-size:11px">Felt: ' + G.ryttere.length + ' ryttere fra ' + Object.keys(TEAMS).length + ' hold</p>' +
+        '<p style="color:#888;font-size:11px">Felt: ' + G.ryttere.length + ' ryttere fra ' + Math.round(G.ryttere.length / 8) + ' hold</p>' +
         '<div class="sbar"><span class="lbl">Klatring:</span><div class="bg"><div class="fill" style="width:'+G.spiller.bj+'%;background:#f44"></div></div><span>'+G.spiller.bj+'</span></div>' +
         '<div class="sbar"><span class="lbl">Sprint:</span><div class="bg"><div class="fill" style="width:'+G.spiller.spr+'%;background:#4f4"></div></div><span>'+G.spiller.spr+'</span></div>' +
         '<div class="sbar"><span class="lbl">Tidskørsel:</span><div class="bg"><div class="fill" style="width:'+G.spiller.tt+'%;background:#44f"></div></div><span>'+G.spiller.tt+'</span></div>' +
