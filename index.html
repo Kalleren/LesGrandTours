@@ -276,6 +276,10 @@
     .mobil-txt { display: none; }
 
     @media (max-width: 768px) {
+		.gt-card .gt-emoji { font-size: 18px; }
+    	.gt-card .gt-name { font-size: 11px; }
+    	.gt-card { padding: 8px; min-width: 80px; }
+        .season-header h1 { font-size: 22px; }
         .top-bar-desktop { display: none !important; }
         .top-bar-mobile { display: block !important; }
         .jerseys { display: none; }
@@ -553,7 +557,7 @@ var TEAMS = {
         { n: "Kim Heiduk", gc: 58, bj: 66, sp: 52, tt: 74, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
     ]},
     "Soudal Quick-Step": { abbr: "SOQ", clr: "#3366ff", r: [
-        { n: "Remco Evenepoel", gc: 92, bj: 85, sp: 68, tt: 97, ud: 88, re: 84, fl: 90, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Remco Evenepoel", gc: 92, bj: 85, sp: 68, tt: 97, ud: 88, re: 84, fl: 90, pri: "tdf", pref: ["tdf","giro","vuelta"] },
         { n: "Mikel Landa", gc: 82, bj: 88, sp: 44, tt: 76, ud: 84, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Julian Alaphilippe", gc: 70, bj: 80, sp: 78, tt: 70, ud: 76, re: 72, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
         { n: "Tim Merlier", gc: 40, bj: 30, sp: 94, tt: 60, ud: 74, re: 80, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
@@ -1115,8 +1119,6 @@ function bestemAIGTdeltagelse(saesonNr) {
             
             // Ingen rytter kører alle 3
             if (gts.length > 2) gts = gts.slice(0, 2);
-            // Ingen rytter kører alle 3
-            if (gts.length > 2) gts = gts.slice(0, 2);
             
             // Mindst 1 GT
             if (gts.length === 0) gts.push(r.pri);
@@ -1139,11 +1141,28 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
         var holdNavn = hn[hi];
         var team = TEAMS[holdNavn];
         var trup = vaelgHoldtrup(holdNavn, gtId, G.saeson);
+        var erSpillerHold = (holdNavn === spillerHoldNavn);
         
-        // Trup er allerede de 8 bedst egnede - brug dem ALLE
+        // SIKR at spillerens rytter ALTID er med i truppen
+        if (erSpillerHold) {
+            var spillerIMed = false;
+            for (var ti = 0; ti < trup.length; ti++) {
+                if (trup[ti].n === spillerOrigNavn) { spillerIMed = true; break; }
+            }
+            if (!spillerIMed) {
+                // Find spillerens rytter i poolen og tilføj
+                for (var pi = 0; pi < team.r.length; pi++) {
+                    if (team.r[pi].n === spillerOrigNavn) {
+                        // Erstat den svageste i truppen
+                        trup[trup.length - 1] = team.r[pi];
+                        break;
+                    }
+                }
+            }
+        }
+        
         for (var ri2 = 0; ri2 < trup.length; ri2++) {
             var x = trup[ri2];
-            var erSpillerHold = (holdNavn === spillerHoldNavn);
             var erSpiller = (erSpillerHold && x.n === spillerOrigNavn);
             
             var r = {
@@ -1168,7 +1187,6 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
                 styrt: false
             };
             
-            // Kopier spillerens forbedrede stats
             if (erSpiller && G.spiller) {
                 r.gc = G.spiller.gc;
                 r.bj = G.spiller.bj;
@@ -1179,7 +1197,6 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
                 r.fl = G.spiller.fl;
             }
             
-            // Træthed for spilleren fra tidligere GT i sæsonen
             if (erSpiller && G.aktuelGTIdx > 0) {
                 var tidligereGT = G.valgteGT[G.aktuelGTIdx - 1];
                 var key = tidligereGT + "_" + gtId;
@@ -1187,9 +1204,7 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
                 if (traethed) {
                     r.energi = Math.round(getMaxEnergi(r) * traethed.energiStart);
                 }
-            }
-            // AI-ryttere der kører 2. GT: reduceret energi
-            else if (!erSpiller) {
+            } else if (!erSpiller) {
                 var aiGTs = G.aiRytterGT[x.n];
                 if (aiGTs && aiGTs.length >= 2) {
                     var gtOrdre = ["giro","tdf","vuelta"];
@@ -1372,7 +1387,7 @@ function visSaesonValg() {
     }
     
     html += '<div class="ctrls" style="margin-top:20px">' +
-        '<button class="btn btn-big btn-y" onclick="startSaeson()"' + (G.valgteGT.length === 0 ? ' disabled' : '') + '>START SÆSON ' + G.saeson + ' →</button>' +
+        '<button class="btn btn-big btn-y" onclick="startSaeson()"' + (G.valgteGT.length === 0 ? ' disabled' : '') + '>START SÆSON ' + G.saeson + '</button>' +
     '</div>';
     
     R(html);
@@ -1454,7 +1469,7 @@ function startGrandTour() {
         '<div class="sbar"><span class="lbl">Udholdenhed:</span><div class="bg"><div class="fill" style="width:'+G.spiller.ud+'%;background:#f80"></div></div><span>'+G.spiller.ud+'</span></div>' +
         '<div class="sbar"><span class="lbl">Restitution:</span><div class="bg"><div class="fill" style="width:'+G.spiller.re+'%;background:#a4f"></div></div><span>'+G.spiller.re+'</span></div>' +
     '</div>' +
-    '<div class="ctrls"><button class="btn btn-big btn-y" onclick="startEtape()">START ETAPE 1 →</button></div>';
+    '<div class="ctrls"><button class="btn btn-big btn-y" onclick="startEtape()">START ETAPE 1</button></div>';
     
     R(html);
 }
@@ -1770,12 +1785,10 @@ function genererGTResume() {
 function getGruppeFarve(g, spiller, gcLeder, spLeder, bjLeder) {
     var gt = getGT();
     
-    // Spilleren = altid hvid
     if (g.ryt.indexOf(spiller) >= 0) {
         return { border: "#fff", bg: "#222", text: "#fff" };
     }
     
-    // Check for trøjebærere
     var harGC = false, harSp = false, harBj = false;
     for (var i = 0; i < g.ryt.length; i++) {
         var r = g.ryt[i];
@@ -1794,17 +1807,12 @@ function getGruppeFarve(g, spiller, gcLeder, spLeder, bjLeder) {
         return { border: gt.bjColor, bg: "#002", text: gt.bjColor };
     }
     
-    // Gruppetto = grå
     if (g.type === "gruppetto") {
         return { border: "#888", bg: "#111", text: "#888" };
     }
-    
-    // Felt = CYAN (ikke blå, for at undgå forveksling med bjergtrøje)
     if (g.type === "felt") {
-        return { border: gt.feltColor, bg: gt.feltBg, text: gt.feltColor };
+        return { border: "#0cc", bg: "#023", text: "#0cc" };
     }
-    
-    // Udbrud = orange
     if (g.type === "udbrud") {
         return { border: "#f80", bg: "#210", text: "#f80" };
     }
@@ -1812,71 +1820,115 @@ function getGruppeFarve(g, spiller, gcLeder, spLeder, bjLeder) {
     return { border: "#888", bg: "#111", text: "#888" };
 }
 
-// ========== TILPASNING AF RESUMÉ-TEKSTER ==========
-// I den eksisterende genererResume() skal disse tekststrenge erstattes:
-//
-// "den gule trøje"    → gt.gcNavn     (fx "Maglia Rosa")
-// "den grønne trøje"  → gt.spNavn     (fx "Maglia Ciclamino")  
-// "den prikkede trøje"→ gt.bjNavn     (fx "Maglia Azzurra")
-// "Tour de France"    → gt.loebNavnBestemt
-// "Touren"            → gt.loebNavn
-// "TOUR DE FRANCE"    → gt.navn.toUpperCase()
-//
-// For at gøre dette robust, her er en wrapper:
-
 function erstatTroejeTekster(tekst) {
     var gt = getGT();
     tekst = tekst.replace(/den gule trøje/g, gt.gcNavn);
     tekst = tekst.replace(/den grønne trøje/g, gt.spNavn);
     tekst = tekst.replace(/den prikkede trøje/g, gt.bjNavn);
     tekst = tekst.replace(/den prikkede bjergtrøje/g, gt.bjNavn);
-    tekst = tekst.replace(/Tour de France/g, gt.loebNavnBestemt);
-    tekst = tekst.replace(/Touren/g, gt.loebNavn);
+    tekst = tekst.replace(/pointkonkurrencen/g, gt.spNavn);
+    tekst = tekst.replace(/bjergkonkurrencen/g, gt.bjNavn);
     tekst = tekst.replace(/TOUR DE FRANCE/g, gt.navn.toUpperCase());
+    tekst = tekst.replace(/Tour de France/g, gt.loebNavnBestemt);
+    tekst = tekst.replace(/i denne Tour/g, "i dette års " + gt.kort);
+    tekst = tekst.replace(/denne Tour/g, "dette års " + gt.kort);
+    tekst = tekst.replace(/Touren/g, gt.loebNavn);
     return tekst;
 }
 
 // ========== TILPASSET visResume() ==========
 
-function visResume() {
-    var resume = G.gemtResume;
-    if (!resume) return;
+function erstatGTHtml(html) {
     var gt = getGT();
     
-    // Erstat trøjenavne i resumé-tekst
-    var tekst = erstatTroejeTekster(resume.tekst);
-    var overskrift = erstatTroejeTekster(resume.overskrift);
+    // Trøje-emojis (kun i klassement-kontekst)
+    html = html.replace(/🟡 Samlet/g, gt.gcEmoji + ' Samlet');
+    html = html.replace(/🟢 Sprint/g, gt.spEmoji + ' Sprint');
+    html = html.replace(/🔴 Bjerg/g, gt.bjEmoji + ' Bjerg');
     
-    var html = '<div style="max-width:650px;margin:0 auto">' +
-        '<div style="text-align:center;margin-bottom:5px">' + gtBadgeHtml() + '</div>' +
-        '<h2 style="color:' + gt.primary + ';text-align:center;font-size:24px;line-height:1.3;margin-bottom:15px;text-transform:uppercase">' + overskrift + '</h2>' +
-        '<div class="box" style="background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);border-color:#444">' +
-            '<p style="font-size:14px;line-height:1.7;color:#ccc;white-space:pre-line">' + tekst + '</p>' +
-        '</div>' +
-        '<div style="text-align:center;margin-top:12px;color:#666;font-size:10px">' +
-            '📰 Etape ' + (G.enr + 1) + ' · ' + G.etaper[G.enr].start + ' → ' + G.etaper[G.enr].slut + ' · ' + G.etaper[G.enr].dist + ' km' +
-        '</div>' +
-        '<div class="ctrls ctrls-2"><button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="tilbageTilResultat()">← TILBAGE</button></div>' +
-    '</div>';
+    // Trøje-emojis ved position 1
+    html = html.replace(/>🟡 </g, '>' + gt.gcEmoji + ' <');
+    html = html.replace(/>🟢 </g, '>' + gt.spEmoji + ' <');
+    html = html.replace(/>🔴 </g, '>' + gt.bjEmoji + ' <');
     
-    R(html);
+    // Jersey-klasser (jy/jg/jp → jgc/jsp/jbj)
+    html = html.replace(/class="jersey jy"/g, 'class="jersey jgc"');
+    html = html.replace(/class="jersey jg"/g, 'class="jersey jsp"');
+    html = html.replace(/class="jersey jp"/g, 'class="jersey jbj"');
+    
+    // Klassement-titler
+    html = html.replace(/🟡 SAMLET KLASSEMENT/g, gt.gcEmoji + ' SAMLET KLASSEMENT');
+    html = html.replace(/🟡 SAMLET STILLING/g, gt.gcEmoji + ' SAMLET STILLING');
+    html = html.replace(/🟡 SAMLET/g, gt.gcEmoji + ' SAMLET');
+    html = html.replace(/🟢 POINTKONKURRENCEN/g, gt.spEmoji + ' ' + gt.spNavn.toUpperCase());
+    html = html.replace(/🔴 BJERGKONKURRENCEN/g, gt.bjEmoji + ' ' + gt.bjNavn.toUpperCase());
+    html = html.replace(/🟡 ALLE/g, gt.gcEmoji + ' ALLE');
+    
+    // Løbsnavne
+    html = html.replace(/TOUR DE FRANCE SLUT!/g, gt.navn.toUpperCase() + ' SLUT!');
+    html = html.replace(/TOUR DE FRANCE/g, gt.loebNavnBestemt);
+    html = html.replace(/Tour de France/g, gt.loebNavnBestemt);
+    html = html.replace(/TOUREN ER SLUT FOR DIG/g, gt.loebNavn.toUpperCase() + ' ER SLUT FOR DIG');
+    html = html.replace(/DU VANDT TOUREN!/g, 'DU VANDT ' + gt.kort.toUpperCase() + '!');
+    html = html.replace(/forlade Touren/g, 'forlade ' + gt.loebNavn);
+    html = html.replace(/Touren/g, gt.loebNavn);
+    
+    // Trøjenavne i tekst
+    html = html.replace(/GUL TRØJE/g, gt.gcNavn.toUpperCase());
+    html = html.replace(/GRØN TRØJE/g, gt.spNavn.toUpperCase());
+    html = html.replace(/PRIKKET TRØJE/g, gt.bjNavn.toUpperCase());
+    
+    // Farver (primær)
+    html = html.replace(/border-color:#ff0/g, 'border-color:' + gt.primary);
+    html = html.replace(/color:#ff0/g, 'color:' + gt.primary);
+    html = html.replace(/background:#110/g, 'background:' + gt.bg);
+    html = html.replace(/border:1px solid #aa0/g, 'border:1px solid ' + gt.secondary);
+    html = html.replace(/border:2px solid #aa0/g, 'border:2px solid ' + gt.secondary);
+    
+    return html;
 }
+
+	
 
 // ========== TILPASSET spillerUdgaaet() ==========
 
 function spillerUdgaaet() {
     var gt = getGT();
     
+    // Nulstil bonus
+    G.bonusPoint = 0;
+    G.bonusGC = 0;
+    G.bonusTroeer = 0;
+    G.slutPlacering = 0;
+    
     // Gem resultat fra denne GT (udgået)
     G.saesonResultater.push({
         gtId: G.aktuelGT,
         udgaaet: true,
         gcPlads: 0,
-        sejre: 0
+        sejre: 0,
+        bonus: 0,
+        bonusDetaljer: { gc: 0, sp: 0, bj: 0, sejre: 0, gennemfoer: 0 }
     });
     
+    // Karrieren er slut (sæson 10)
+    if (G.saeson >= 10) {
+        sletGemtSpil();
+        R('<div style="text-align:center;padding:20px">' +
+            '<div style="font-size:50px">💀</div>' +
+            '<h1>KARRIEREN ER SLUT</h1>' +
+            '<div class="box" style="border-color:#f44">' +
+                '<p>' + G.navn + ' udgik af sit sidste løb.</p>' +
+                '<p style="color:#888">En skuffende afslutning på karrieren.</p>' +
+            '</div>' +
+            '<div class="ctrls ctrls-2">' +
+                '<button class="btn btn-big" onclick="visPlots()">📊 STATISTIK</button>' +
+                '<button class="btn btn-big btn-y" onclick="location.reload()">NY KARRIERE</button>' +
+            '</div>' +
+        '</div>');
+    }
     // Har vi flere GT'er at køre denne sæson?
-    if (G.aktuelGTIdx < G.valgteGT.length - 1) {
+    else if (G.aktuelGTIdx < G.valgteGT.length - 1) {
         R('<div style="text-align:center;padding:20px">' +
             '<div style="font-size:50px">💀</div>' +
             '<h1 style="color:' + gt.primary + '">UDGÅET AF ' + gt.navn.toUpperCase() + '</h1>' +
@@ -1885,11 +1937,12 @@ function spillerUdgaaet() {
                 '<p style="color:#888">Men der er stadig ' + GT_CONFIG[G.valgteGT[G.aktuelGTIdx + 1]].navn + ' at køre!</p>' +
             '</div>' +
             '<div class="ctrls">' +
-                '<button class="btn btn-big btn-y" onclick="naesteGrandTour()">NÆSTE GRAND TOUR →</button>' +
+                '<button class="btn btn-big btn-y" onclick="naesteGrandTour()">NÆSTE GRAND TOUR</button>' +
             '</div>' +
         '</div>');
-    } else {
-        // Sæsonafslutning
+    }
+    // Sæsonafslutning (ingen flere GT'er denne sæson)
+    else {
         afslutSaeson();
     }
 }
@@ -1900,6 +1953,12 @@ function naesteGrandTour() {
     G.aktuelGTIdx++;
     G.aktuelGT = G.valgteGT[G.aktuelGTIdx];
     startGrandTour();
+}
+
+function naeste() {
+    G.enr++;
+    G.stilTab = "gc";
+    startEtape();
 }
 
 function afslutGrandTour() {
@@ -1981,7 +2040,7 @@ function visGTResultatOgGaaVidere(resultat) {
     
     html += '<div class="ctrls">' +
         '<button class="btn btn-big" onclick="visTourResume()">📰 REFERAT</button>' +
-        '<button class="btn btn-big btn-y" onclick="naesteGrandTour()">START ' + naesteGT.kort.toUpperCase() + ' →</button>' +
+        '<button class="btn btn-big btn-y" onclick="naesteGrandTour()">START ' + naesteGT.kort.toUpperCase() + '</button>' +
     '</div>';
     
     R(html);
@@ -2061,11 +2120,11 @@ function visSaesonOversigt() {
         '</div>';
     } else if (samletBonus > 0) {
         html += '<div class="ctrls">' +
-            '<button class="btn btn-big btn-y" onclick="fordelPoint()">FORDEL POINT →</button>' +
+            '<button class="btn btn-big btn-y" onclick="fordelPoint()">FORDEL POINT</button>' +
         '</div>';
     } else {
         html += '<div class="ctrls">' +
-            '<button class="btn btn-big btn-y" onclick="nySaeson()">SÆSON ' + (G.saeson + 1) + ' →</button>' +
+            '<button class="btn btn-big btn-y" onclick="nySaeson()">SÆSON ' + (G.saeson + 1) + '</button>' +
         '</div>';
     }
     
@@ -2103,14 +2162,14 @@ function gtSlutKnapper() {
             '<button class="btn btn-big btn-y" onclick="visAlleSlut()">📋 ALLE</button>' +
             '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visTourResume()">📰 REFERAT</button>' +
             '<button class="btn btn-big" onclick="visPlots()">📊 STATISTIK</button>' +
-            '<button class="btn btn-big btn-y" onclick="afslutGrandTour()">START ' + naesteGT.kort.toUpperCase() + ' →</button>' +
+            '<button class="btn btn-big btn-y" onclick="afslutGrandTour()">START ' + naesteGT.kort.toUpperCase() + '</button>' +
         '</div>';
     } else {
         return '<div class="ctrls">' +
             '<button class="btn btn-big btn-y" onclick="visAlleSlut()">📋 ALLE</button>' +
             '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visTourResume()">📰 REFERAT</button>' +
             '<button class="btn btn-big" onclick="visPlots()">📊 STATISTIK</button>' +
-            '<button class="btn btn-big btn-y" onclick="afslutGrandTour()">AFSLUT SÆSON →</button>' +
+            '<button class="btn btn-big btn-y" onclick="afslutGrandTour()">AFSLUT SÆSON</button>' +
         '</div>';
     }
 }
@@ -2764,13 +2823,13 @@ function visRes(res, erTT, udeRyttere, vinderTid, tidsGraense) {
         '<div class="ctrls ctrls-3">' +
             '<button class="btn btn-big btn-y" onclick="visAlleResultater()">📋 ALLE</button>' +
             '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visResume()">📰 REFERAT</button>' +
-            '<button class="btn btn-big btn-r" onclick="spillerUdgaaet()">AFSLUT →</button>' +
+            '<button class="btn btn-big btn-r" onclick="spillerUdgaaet()">AFSLUT</button>' +
         '</div>';
     } else if (G.enr < 20) {
         html += '<div class="ctrls ctrls-3">' +
             '<button class="btn btn-big btn-y" onclick="visAlleResultater()">📋 ALLE</button>' +
             '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visResume()">📰 REFERAT</button>' +
-            '<button class="btn btn-big" onclick="samlet()">STILLING →</button>' +
+            '<button class="btn btn-big" onclick="samlet()">STILLING</button>' +
         '</div>';
     } else {
         html += '<div class="ctrls ctrls-3">' +
@@ -2783,11 +2842,8 @@ function visRes(res, erTT, udeRyttere, vinderTid, tidsGraense) {
     R(html);
 }
 
-// ========== TILPASSET samlet() ==========
-
 function samlet() {
     gemSpil(true);
-    var gt = getGT();
     var aktive = G.ryttere.filter(function(r) { return !r.ude; });
     var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var spS = aktive.slice().sort(function(a,b) { return (G.sprPts[b.navn]||0) - (G.sprPts[a.navn]||0); });
@@ -2795,26 +2851,54 @@ function samlet() {
     
     var fTid = gcS[0] ? gcS[0].stid : 0;
     var data, titel;
-    if (G.stilTab === "gc") { data = gcS; titel = gt.gcEmoji + " SAMLET"; }
-    else if (G.stilTab === "sp") { data = spS; titel = gt.spEmoji + " SPRINT"; }
-    else { data = bjS; titel = gt.bjEmoji + " BJERG"; }
+    if (G.stilTab === "gc") { data = gcS; titel = "🟡 SAMLET"; }
+    else if (G.stilTab === "sp") { data = spS; titel = "🟢 SPRINT"; }
+    else { data = bjS; titel = "🔴 BJERG"; }
     
     var spi = -1;
     for (var i = 0; i < data.length; i++) { if (data[i].sp) { spi = i; break; } }
     
     var udeAntal = G.ryttere.filter(function(r) { return r.ude; }).length;
+    
+var maxSpPts = 0;
+for (var i = 0; i < aktive.length; i++) {
+    var ptsSp = G.sprPts[aktive[i].navn] || 0;
+    if (ptsSp > maxSpPts) maxSpPts = ptsSp;
+}
 
-    var html = '<div style="text-align:center;margin-bottom:5px">' + gtBadgeHtml() + '</div>';
-    html += '<h2 style="color:' + gt.primary + '">STILLING - Etape ' + (G.enr + 1) + '</h2>';
-    html += jerseyHtml(gcS, spS, bjS);
-    
-    if (udeAntal > 0) {
-        html += '<p style="text-align:center;color:#f44;font-size:11px">' + udeAntal + ' rytter' + (udeAntal > 1 ? 'e' : '') + ' ude af løbet</p>';
-    }
-    
-    html += getStillingTabs();
-    
-    html += '<div class="box"><h3>' + titel + '</h3>';
+var maxBjPts = 0;
+for (var i = 0; i < aktive.length; i++) {
+    var ptsBj = G.bjgPts[aktive[i].navn] || 0;
+    if (ptsBj > maxBjPts) maxBjPts = ptsBj;
+}
+
+var spNavn = "-";
+var bjNavn = "-";
+var spTopTxt = "";
+var bjTopTxt = "";
+
+if (maxSpPts > 0 && spS.length > 0) {
+    spNavn = spS[0].navn.split(" ").pop();
+    spTopTxt = " (" + maxSpPts + ")";
+}
+if (maxBjPts > 0 && bjS.length > 0) {
+    bjNavn = bjS[0].navn.split(" ").pop();
+    bjTopTxt = " (" + maxBjPts + ")";
+}
+
+var html = '<h2>STILLING - Etape ' + (G.enr + 1) + '</h2>' +
+'<div class="jerseys">' +
+    '<div class="jersey jy">🟡 ' + (gcS[0] ? gcS[0].navn.split(" ").pop() : "-") + '</div>' +
+    '<div class="jersey jg">🟢 ' + spNavn + spTopTxt + '</div>' +
+    '<div class="jersey jp">🔴 ' + bjNavn + bjTopTxt + '</div>' +
+'</div>' +
+    (udeAntal > 0 ? '<p style="text-align:center;color:#f44;font-size:11px">' + udeAntal + ' rytter' + (udeAntal > 1 ? 'e' : '') + ' ude af touren</p>' : '') +
+    '<div class="tabs">' +
+    '<div class="tab tab-gc ' + (G.stilTab==='gc'?'active':'') + '" onclick="G.stilTab=\'gc\';samlet()">🟡 Samlet</div>' +
+    '<div class="tab tab-sp ' + (G.stilTab==='sp'?'active':'') + '" onclick="G.stilTab=\'sp\';samlet()">🟢 Sprint</div>' +
+    '<div class="tab tab-bj ' + (G.stilTab==='bj'?'active':'') + '" onclick="G.stilTab=\'bj\';samlet()">🔴 Bjerg</div>' +
+'</div>' +
+    '<div class="box"><h3>' + titel + '</h3>';
     
     for (var i = 0; i < Math.min(15, data.length); i++) {
         var r = data[i];
@@ -2827,9 +2911,9 @@ function samlet() {
         var j = "";
         var visTal = true;
         if (pos === 1) {
-            if (G.stilTab === "gc") { j = gt.gcEmoji + " "; visTal = false; }
-            else if (G.stilTab === "sp") { j = gt.spEmoji + " "; visTal = false; }
-            else { j = gt.bjEmoji + " "; visTal = false; }
+            if (G.stilTab === "gc") { j = "🟡 "; visTal = false; }
+            else if (G.stilTab === "sp") { j = "🟢 "; visTal = false; }
+            else if (G.stilTab === "bj") { j = "🔴 "; visTal = false; }
         }
         var numTxt = visTal ? pos + '. ' : '';
         html += '<div class="' + cls + '"><span>' + j + numTxt + r.navn.substring(0,32) + ' <span style="color:#666">' + r.holdAbbr + '</span></span><span>' + val + '</span></div>';
@@ -2841,22 +2925,24 @@ function samlet() {
         if (G.stilTab === "gc") val = '+' + ft(r.stid - fTid);
         else if (G.stilTab === "sp") val = (G.sprPts[r.navn] || 0) + ' pts';
         else val = (G.bjgPts[r.navn] || 0) + ' pts';
-        html += '<br><div class="row pl"><span>' + (spi+1) + '. ' + r.navn + '</span><span>' + val + '</span></div>';
+        html += '<br><div class="row pl"><span>' + (spi+1) + '. ' + r.navn + '</span><span>' + val + ' </span></div>';
     }
     html += '</div>';
     
-    if (G.enr < 20) {
-        html += '<div class="ctrls ctrls-3">' +
-            '<button class="btn btn-big btn-y" onclick="visAlleGC()">' + gt.gcEmoji + ' ALLE</button>' +
-            '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visEtapeOversigt()">📋 ETAPER</button>' +
-            '<button class="btn btn-big" onclick="naeste()">NÆSTE ETAPE →</button>' +
-        '</div>';
-    } else {
-        html += '<div class="ctrls ctrls-2">' +
-            '<button class="btn btn-big btn-y" onclick="visAlleGC()">' + gt.gcEmoji + ' ALLE</button>' +
-            '<button class="btn btn-big" onclick="slut()">SLUTRESULTAT 🏆</button>' +
-        '</div>';
-    }
+	if (G.enr < 20) {
+	    html += '<div class="ctrls ctrls-3">' +
+	        '<button class="btn btn-big btn-y" onclick="visAlleGC()">🟡 ALLE</button>' +
+	        '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visEtapeOversigt()">📋 ETAPER</button>' +
+	        '<button class="btn btn-big" onclick="naeste()"><span class="desktop-txt">NÆSTE ETAPE →</span><span class="mobil-txt">NÆSTE ETAPE</span></button>' +
+	        '</div>';
+
+
+	} else {
+	    html += '<div class="ctrls ctrls-2">' +
+	        '<button class="btn btn-big btn-y" onclick="visAlleGC()">🟡 ALLE</button>' +
+	        '<button class="btn btn-big" onclick="slut()"><span class="desktop-txt">SLUTRESULTAT 🏆</span><span class="mobil-txt">SLUT 🏆</span></button>' +
+	        '</div>';
+	}
 
     R(html);
 }
@@ -2864,17 +2950,17 @@ function samlet() {
 // ========== TILPASSET slut() ==========
 
 function slut() {
-    var gt = getGT();
-    var aktive = G.ryttere.filter(function(r) { return !r.ude; });
+    var gt = getGT(); 
+	var aktive = G.ryttere.filter(function(r) { return !r.ude; });
     var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var spS = aktive.slice().sort(function(a,b) { return (G.sprPts[b.navn]||0) - (G.sprPts[a.navn]||0); });
     var bjS = aktive.slice().sort(function(a,b) { return (G.bjgPts[b.navn]||0) - (G.bjgPts[a.navn]||0); });
     
     var fTid = gcS[0] ? gcS[0].stid : 0;
     var data, titel;
-    if (G.stilTab === "gc") { data = gcS; titel = gt.gcEmoji + " SAMLET KLASSEMENT"; }
-    else if (G.stilTab === "sp") { data = spS; titel = gt.spEmoji + " " + gt.spNavn.toUpperCase(); }
-    else { data = bjS; titel = gt.bjEmoji + " " + gt.bjNavn.toUpperCase(); }
+    if (G.stilTab === "gc") { data = gcS; titel = "🟡 SAMLET KLASSEMENT"; }
+    else if (G.stilTab === "sp") { data = spS; titel = "🟢 POINTKONKURRENCEN"; }
+    else { data = bjS; titel = "🔴 BJERGKONKURRENCEN"; }
     
     var spiGC = -1;
     for (var i = 0; i < gcS.length; i++) { if (gcS[i].sp) { spiGC = i; break; } }
@@ -2882,33 +2968,55 @@ function slut() {
     var spi = -1;
     for (var i = 0; i < data.length; i++) { if (data[i].sp) { spi = i; break; } }
     
-    var msg = spiGC === 0 ? "🎉🎉 DU VANDT " + gt.kort.toUpperCase() + "! 🎉🎉"
+    var msg = spiGC === 0 ? "🎉🎉 DU VANDT TOUREN! 🎉🎉"
         : spiGC <= 2 ? "🎊 PODIUM!"
         : spiGC <= 9 ? "👏 Top 10!"
         : spiGC <= 19 ? "👍 Top 20!"
         : "Du gennemførte!";
     
     var troeje = [];
-    if (gcS[0] && gcS[0].sp) troeje.push(gt.gcEmoji + " " + gt.gcNavn + "!");
-    if (spS[0] && spS[0].sp) troeje.push(gt.spEmoji + " " + gt.spNavn + "!");
-    if (bjS[0] && bjS[0].sp) troeje.push(gt.bjEmoji + " " + gt.bjNavn + "!");
+    if (gcS[0] && gcS[0].sp) troeje.push("🟡 GUL TRØJE!");
+    if (spS[0] && spS[0].sp) troeje.push("🟢 GRØN TRØJE!");
+    if (bjS[0] && bjS[0].sp) troeje.push("🔴 PRIKKET TRØJE!");
     
-    var html = '<div style="text-align:center">' +
-        '<div style="font-size:50px">🏆</div>' +
-        '<h1 style="color:' + gt.primary + '">' + gt.navn.toUpperCase() + ' SLUT!</h1>' +
+    // Bonus for at gennemføre
+    var bonusGennemfoer = G.spiller.ude ? 0 : gt.gennemfoer;
+    
+    // GC-bonus baseret på placering
+	var gcPointTabel = gt.gcPoint;
+    var bonusGC = 0;
+    if (spiGC < 10) {
+        bonusGC = gcPointTabel[spiGC];
+    }
+    
+	var bonusSp = (spS.length > 0 && spS[0].sp) ? gt.troeje : 0;
+	var bonusBj = (bjS.length > 0 && bjS[0].sp) ? gt.troeje : 0;
+    
+    var bonusTroeer = bonusSp + bonusBj;
+    
+    // Tæl etapesejre
+    var etapeSejre = 0;
+    for (var i = 0; i < ETAPE_HISTORIK.length; i++) {
+        if (ETAPE_HISTORIK[i].spiEtapePlads === 1) etapeSejre++;
+    }
+    var bonusSejre = etapeSejre;
+    
+    // Samlet bonus
+    var bonusPoint = bonusGennemfoer + bonusGC + bonusTroeer + bonusSejre;
+
+    var html = '<div style="text-align:center"><div style="font-size:50px">🏆</div><h1>TOUR DE FRANCE SLUT!</h1></div>' +
+    '<div class="box" style="text-align:center;border-color:#ff0"><h2>' + msg + '</h2>' + (troeje.length > 0 ? '<div class="hl" style="margin-top:10px">' + troeje.join('<br>') + '</div>' : '') + '</div>' +
+    '<div class="jerseys">' +
+        '<div class="jersey jy">🟡 ' + (gcS[0] ? gcS[0].navn : "-") + '</div>' +
+        '<div class="jersey jg">🟢 ' + (spS[0] ? spS[0].navn : "-") + ' (' + (G.sprPts[spS[0] ? spS[0].navn : ""]||0) + ')</div>' +
+        '<div class="jersey jp">🔴 ' + (bjS[0] ? bjS[0].navn : "-") + ' (' + (G.bjgPts[bjS[0] ? bjS[0].navn : ""]||0) + ')</div>' +
     '</div>' +
-    '<div class="box" style="text-align:center;border-color:' + gt.primary + '"><h2 style="color:' + gt.primary + '">' + msg + '</h2>' + 
-    (troeje.length > 0 ? '<div style="color:' + gt.primary + ';margin-top:10px">' + troeje.join('<br>') + '</div>' : '') + '</div>';
-    
-    html += '<div class="jerseys">' +
-        '<div class="jersey jgc">' + gt.gcEmoji + ' ' + (gcS[0] ? gcS[0].navn : "-") + '</div>' +
-        '<div class="jersey jsp">' + gt.spEmoji + ' ' + (spS[0] ? spS[0].navn : "-") + ' (' + (G.sprPts[spS[0] ? spS[0].navn : ""]||0) + ')</div>' +
-        '<div class="jersey jbj">' + gt.bjEmoji + ' ' + (bjS[0] ? bjS[0].navn : "-") + ' (' + (G.bjgPts[bjS[0] ? bjS[0].navn : ""]||0) + ')</div>' +
-    '</div>';
-    
-    html += getStillingTabs();
-    
-    html += '<div class="box"><h3>' + titel + '</h3>';
+    '<div class="tabs">' +
+        '<div class="tab tab-gc ' + (G.stilTab==='gc'?'active':'') + '" onclick="G.stilTab=\'gc\';slut()">🟡 Samlet</div>' +
+        '<div class="tab tab-sp ' + (G.stilTab==='sp'?'active':'') + '" onclick="G.stilTab=\'sp\';slut()">🟢 Sprint</div>' +
+        '<div class="tab tab-bj ' + (G.stilTab==='bj'?'active':'') + '" onclick="G.stilTab=\'bj\';slut()">🔴 Bjerg</div>' +
+    '</div>' +
+    '<div class="box"><h3>' + titel + '</h3>';
     
     for (var i = 0; i < Math.min(15, data.length); i++) {
         var r = data[i];
@@ -2921,9 +3029,9 @@ function slut() {
             else if (pos === 2) { prefix = "🥈 "; visTal = false; }
             else if (pos === 3) { prefix = "🥉 "; visTal = false; }
         } else if (G.stilTab === "sp") {
-            if (pos === 1) { prefix = gt.spEmoji + " "; visTal = false; }
-        } else {
-            if (pos === 1) { prefix = gt.bjEmoji + " "; visTal = false; }
+            if (pos === 1) { prefix = "🟢 "; visTal = false; }
+        } else if (G.stilTab === "bj") {
+            if (pos === 1) { prefix = "🔴 "; visTal = false; }
         }
         var val;
         if (G.stilTab === "gc") val = pos === 1 ? ft(r.stid) : '+' + ft(r.stid - fTid);
@@ -2939,15 +3047,49 @@ function slut() {
         if (G.stilTab === "gc") val = '+' + ft(r.stid - fTid);
         else if (G.stilTab === "sp") val = (G.sprPts[r.navn] || 0) + ' pts';
         else val = (G.bjgPts[r.navn] || 0) + ' pts';
-        html += '<br><div class="row pl"><span>' + (spi+1) + '. ' + r.navn + '</span><span>' + val + '</span></div>';
+        html += '<br><div class="row pl"><span>' + (spi+1) + '. ' + r.navn + '</span><span>' + val + ' </span></div>';
     }
     html += '</div>';
     
-    // Knapper: GT-specifik afslutning
-    html += gtSlutKnapper();
+    // Gem trøjevindere til næste tour
+    G.lastGcVinder = gcS[0] ? gcS[0].navn : null;
+    G.lastSpVinder = spS[0] ? spS[0].navn : null;
+    G.lastBjVinder = bjS[0] ? bjS[0].navn : null;
 
+    // Gem bonus point til senere
+    G.bonusPoint = bonusPoint;
+    G.bonusGC = bonusGC;
+    G.bonusTroeer = bonusTroeer;
+    G.slutPlacering = spiGC + 1;
+    
+	html += gtSlutKnapper();
+    
     R(html);
 }
+
+function visResume() {
+    var resume = G.gemtResume;
+    if (!resume) return;
+    var gt = getGT();
+    
+    var tekst = erstatTroejeTekster(resume.tekst);
+    var overskrift = erstatTroejeTekster(resume.overskrift);
+    
+    var html = '<div style="max-width:650px;margin:0 auto">' +
+        '<div style="text-align:center;margin-bottom:5px">' + gtBadgeHtml() + '</div>' +
+        '<h2 style="color:' + gt.primary + ';text-align:center;font-size:24px;line-height:1.3;margin-bottom:15px;text-transform:uppercase">' + overskrift + '</h2>' +
+        '<div class="box" style="background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);border-color:#444">' +
+            '<p style="font-size:14px;line-height:1.7;color:#ccc;white-space:pre-line">' + tekst + '</p>' +
+        '</div>' +
+        '<div style="text-align:center;margin-top:12px;color:#666;font-size:10px">' +
+            '📰 Etape ' + (G.enr + 1) + ' · ' + G.etaper[G.enr].start + ' → ' + G.etaper[G.enr].slut + ' · ' + G.etaper[G.enr].dist + ' km' +
+        '</div>' +
+        '<div class="ctrls ctrls-2"><button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="tilbageTilResultat()">TILBAGE</button></div>' +
+    '</div>';
+    
+    R(html);
+}
+
 
 // ========== visTourResume() → bruger genererGTResume() ==========
 
@@ -3022,7 +3164,7 @@ function fordelPoint() {
         '<div class="sbar"><span class="lbl">Udholdenhed:</span><div class="bg"><div class="fill" style="width:'+Math.min(99,r.ud)+'%;background:#f80"></div></div><span>'+r.ud+'</span> <button class="btn" onclick="addStat(\'ud\')" ' + (pt <= 0 || r.ud >= 99 ? 'disabled' : '') + '>+</button></div>' +
         '<div class="sbar"><span class="lbl">Restitution:</span><div class="bg"><div class="fill" style="width:'+Math.min(99,r.re)+'%;background:#a4f"></div></div><span>'+r.re+'</span> <button class="btn" onclick="addStat(\'re\')" ' + (pt <= 0 || r.re >= 99 ? 'disabled' : '') + '>+</button></div>' +
     '</div>' +
-    '<div class="ctrls"><button class="btn btn-big btn-y" onclick="nySaeson()">START SÆSON ' + (G.saeson + 1) + ' →</button></div>';
+    '<div class="ctrls"><button class="btn btn-big btn-y" onclick="nySaeson()">START SÆSON ' + (G.saeson + 1) + '</button></div>';
     
     R(html);
 }
@@ -3042,11 +3184,8 @@ function addStat(stat) {
 // ========== TILPASSET ETAPEOVERSIGT ==========
 
 function visEtapeOversigt() {
-    var gt = getGT();
-    var html = '<div style="text-align:center;margin-bottom:5px">' + gtBadgeHtml() + '</div>';
-    html += '<h2 style="color:' + gt.primary + '">📋 ETAPEOVERSIGT</h2>';
-    html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">21 etaper · ' + 
-            G.etaper.reduce(function(sum, e) { return sum + e.dist; }, 0) + ' km total</div>';
+    var html = '<h2>📋 ETAPEOVERSIGT - Tour ' + G.tourNr + '</h2>';
+    html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">21 etaper · ' + G.etaper.reduce(function(sum, e) { return sum + e.dist; }, 0) + ' km total</div>';
     
     html += '<div id="etapeScrollContainer" class="box" style="max-height:450px;overflow-y:auto">';
     
@@ -3057,17 +3196,17 @@ function visEtapeOversigt() {
         var erKoert = (i <= G.enr);
         
         var typeClr = e.type === 'bjerg' ? '#f44' : e.type === 'kuperet' ? '#f80' : e.type === 'tt' ? '#3399ff' : '#0f0';
-        var typeTxt = e.type === 'bjerg' ? '🏔️ Bjerg' : e.type === 'kuperet' ? '⛰️ Kuperet' : e.type === 'tt' ? '⏱️ TT' : '🛣️ Flad';
+        var typeTxt = e.type === 'bjerg' ? '🏔️ Bjerg' : e.type === 'kuperet' ? '⛰️ Kuperet' : e.type === 'tt' ? '⏱️ Enkeltstart' : '🛣️ Flad';
         
         var rowStyle = '';
         var marker = '';
         var scrollId = '';
         if (erKommende) {
-            rowStyle = 'background:linear-gradient(90deg,' + gt.bg + ' 0%,#110 100%);border:2px solid ' + gt.primary + ';';
-            marker = ' <span style="color:' + gt.primary + ';font-weight:bold">◄ NÆSTE</span>';
+            rowStyle = 'background:linear-gradient(90deg,#330 0%,#110 100%);border:2px solid #ff0;';
+            marker = ' <span style="color:#ff0;font-weight:bold">◄ NÆSTE</span>';
             scrollId = ' id="naeste-etape-marker"';
         } else if (erAktuel) {
-            rowStyle = 'border:2px solid ' + gt.secondary + ';';
+            rowStyle = 'background:linear-gradient(90deg,#220 0%,#110 100%);border:2px solid #aa0;';
             marker = ' <span style="color:#0f0">✓</span>';
             if (!erKommende) scrollId = ' id="naeste-etape-marker"';
         } else if (erKoert) {
@@ -3075,6 +3214,7 @@ function visEtapeOversigt() {
             marker = ' <span style="color:#0f0">✓</span>';
         }
         
+// Find etapevinder fra historik
         var etapeVinder = "";
         if (erKoert) {
             for (var hi = 0; hi < ETAPE_HISTORIK.length; hi++) {
@@ -3082,7 +3222,8 @@ function visEtapeOversigt() {
                     var vinderNavn = ETAPE_HISTORIK[hi].vinder.split(" ").pop();
                     var vinderErSpiller = (ETAPE_HISTORIK[hi].vinder === G.spiller.navn);
                     var vinderFarve = vinderErSpiller ? "#fff" : "#888";
-                    etapeVinder = '<span style="color:' + vinderFarve + ';font-size:11px">' + (vinderErSpiller ? "🏆 " : "🏁 ") + vinderNavn + '</span>';
+                    var vinderPrefix = vinderErSpiller ? "🏆 " : "🏁 ";
+                    etapeVinder = '<span style="color:' + vinderFarve + ';font-size:11px">' + vinderPrefix + vinderNavn + '</span>';
                     break;
                 }
             }
@@ -3103,16 +3244,34 @@ function visEtapeOversigt() {
     
     html += '</div>';
     
+    var antalFlad = 0, antalKuperet = 0, antalBjerg = 0, antalTT = 0;
+    for (var i = 0; i < G.etaper.length; i++) {
+        if (G.etaper[i].type === 'flad') antalFlad++;
+        else if (G.etaper[i].type === 'kuperet') antalKuperet++;
+        else if (G.etaper[i].type === 'bjerg') antalBjerg++;
+        else if (G.etaper[i].type === 'tt') antalTT++;
+    }
+    
+    html += '<div style="display:flex;justify-content:center;gap:15px;margin-top:10px;font-size:11px;flex-wrap:wrap">' +
+        '<span style="color:#0f0">🛣️ ' + antalFlad + ' flade</span>' +
+        '<span style="color:#f80">⛰️ ' + antalKuperet + ' kuperede</span>' +
+        '<span style="color:#f44">🏔️ ' + antalBjerg + ' bjerg</span>' +
+        '<span style="color:#3399ff">⏱️ ' + antalTT + ' enkeltstarter</span>' +
+    '</div>';
+    
+    // Tilbage-knap: gå til samlet eller slut afhængigt af om touren er færdig
     var tilbageFunc = G.enr >= 20 ? 'slut()' : 'samlet()';
     html += '<div class="ctrls" style="margin-top:15px"><button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="' + tilbageFunc + '">← TILBAGE</button></div>';
     
     R(html);
     
+    // Auto-scroll til næste etape
     setTimeout(function() {
         var marker = document.getElementById('naeste-etape-marker');
         var container = document.getElementById('etapeScrollContainer');
         if (marker && container) {
-            container.scrollTop = marker.offsetTop - container.offsetTop - 80;
+            var markerTop = marker.offsetTop - container.offsetTop;
+            container.scrollTop = markerTop - 80;
         }
     }, 50);
 }
@@ -3121,23 +3280,24 @@ function visEtapeOversigt() {
 // Brug GT-farver i plots
 
 function visPlots() {
-    var gt = getGT();
     G.plotTab = G.plotTab || "etaper";
     
-    var html = '<h2 style="color:' + gt.primary + '">📊 Statistik for ' + G.navn + '</h2>' +
+    var html = '<h2>📊 Tour-statistik for ' + G.navn + '</h2>' +
         '<div class="plot-tabs">' +
             '<div class="tab ' + (G.plotTab === "etaper" ? "active" : "") + '" onclick="G.plotTab=\'etaper\';visPlots()">📊 Etaper</div>' +
-            '<div class="tab tab-gc ' + (G.plotTab === "gc" ? "active" : "") + '" onclick="G.plotTab=\'gc\';visPlots()">' + gt.gcEmoji + ' GC</div>' +
-            '<div class="tab tab-sp ' + (G.plotTab === "groen" ? "active" : "") + '" onclick="G.plotTab=\'groen\';visPlots()">' + gt.spEmoji + ' Sprint</div>' +
-            '<div class="tab tab-bj ' + (G.plotTab === "prikket" ? "active" : "") + '" onclick="G.plotTab=\'prikket\';visPlots()">' + gt.bjEmoji + ' Bjerg</div>' +
+            '<div class="tab tab-gc ' + (G.plotTab === "gc" ? "active" : "") + '" onclick="G.plotTab=\'gc\';visPlots()">🟡 Gul</div>' +
+            '<div class="tab tab-sp ' + (G.plotTab === "groen" ? "active" : "") + '" onclick="G.plotTab=\'groen\';visPlots()">🟢 Grøn</div>' +
+            '<div class="tab tab-bj ' + (G.plotTab === "prikket" ? "active" : "") + '" onclick="G.plotTab=\'prikket\';visPlots()">🔴 Prikket</div>' +
         '</div>' +
         '<canvas id="plotCanvas" style="width:100%;height:300px;border:2px solid #444;background:#111;border-radius:5px"></canvas>' +
         '<div id="plotLegend" style="text-align:center;margin-top:10px;font-size:12px;color:#888"></div>' +
         '<div style="text-align:center;margin-top:15px">' +
-            '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="slut()">← TILBAGE</button>' +
-        '</div>';
+	    '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="slut()">← TILBAGE</button>' +
+	'</div>';
+
     
     R(html);
+    
     setTimeout(function() { tegnPlot(G.plotTab); }, 50);
 }
 
@@ -3152,22 +3312,12 @@ function getPlotFarve(type) {
     return "#ff0";
 }
 
-// I den originale tegnPlot(), erstat hardcoded farver:
-//   trojeConfig.farve → getPlotFarve(type)
-//   trojeConfig.emoji → gt.gcEmoji / gt.spEmoji / gt.bjEmoji
-//   trojeConfig.troejeNavn → gt.gcNavn / gt.spNavn / gt.bjNavn
-
-// ========== TILPASSET visAlleGC() og visAlleSlut() ==========
-// Brug GT-specifikke tabs og emojis (samme mønster som samlet())
-// Erstat alle "🟡" med gt.gcEmoji, "🟢" med gt.spEmoji, "🔴" med gt.bjEmoji
-
 function visAlleGC() {
-    var gt = getGT();
     var aktive = G.ryttere.filter(function(r) { return !r.ude; });
     var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var fTid = gcS[0] ? gcS[0].stid : 0;
     
-    var html = '<h2 style="color:' + gt.primary + '">' + gt.gcEmoji + ' SAMLET STILLING - ALLE</h2>';
+    var html = '<h2>🟡 SAMLET STILLING - ALLE</h2>';
     html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">Efter etape ' + (G.enr + 1) + '</div>';
     
     html += '<div class="box" style="max-height:400px;overflow-y:auto"><h3>Komplet klassement:</h3>';
@@ -3177,8 +3327,9 @@ function visAlleGC() {
         var pos = i + 1;
         var cls = r.sp ? "row pl" : "row";
         var tidTxt = pos === 1 ? ft(r.stid) : '+' + ft(r.stid - fTid);
-        var med = pos === 1 ? gt.gcEmoji + " " : "";
-        var visTal = pos !== 1;
+        var med = "";
+        var visTal = true;
+        if (pos === 1) { med = "🟡 "; visTal = false; }
         var numTxt = visTal ? pos + '. ' : '';
         html += '<div class="' + cls + '"><span>' + med + numTxt + r.navn + ' <span style="color:' + r.holdClr + '">' + r.holdAbbr + '</span></span>' +
                 '<span>' + tidTxt + '</span></div>';
@@ -3191,7 +3342,6 @@ function visAlleGC() {
 }
 
 function visAlleSlut() {
-    var gt = getGT();
     var aktive = G.ryttere.filter(function(r) { return !r.ude; });
     var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var spS = aktive.slice().sort(function(a,b) { return (G.sprPts[b.navn]||0) - (G.sprPts[a.navn]||0); });
@@ -3199,16 +3349,17 @@ function visAlleSlut() {
     
     var fTid = gcS[0] ? gcS[0].stid : 0;
     var data, titel;
-    if (G.stilTab === "gc") { data = gcS; titel = gt.gcEmoji + " SAMLET KLASSEMENT"; }
-    else if (G.stilTab === "sp") { data = spS; titel = gt.spEmoji + " " + gt.spNavn.toUpperCase(); }
-    else { data = bjS; titel = gt.bjEmoji + " " + gt.bjNavn.toUpperCase(); }
+    if (G.stilTab === "gc") { data = gcS; titel = "🟡 SAMLET KLASSEMENT"; }
+    else if (G.stilTab === "sp") { data = spS; titel = "🟢 POINTKONKURRENCEN"; }
+    else { data = bjS; titel = "🔴 BJERGKONKURRENCEN"; }
     
-    var html = '<h2 style="color:' + gt.primary + '">' + titel + ' - ALLE</h2>';
+    var html = '<h2>' + titel + ' - ALLE</h2>';
+    html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">Endelig stilling</div>';
     
     html += '<div class="tabs">' +
-        '<div class="tab tab-gc ' + (G.stilTab==='gc'?'active':'') + '" onclick="G.stilTab=\'gc\';visAlleSlut()">' + gt.gcEmoji + ' Samlet</div>' +
-        '<div class="tab tab-sp ' + (G.stilTab==='sp'?'active':'') + '" onclick="G.stilTab=\'sp\';visAlleSlut()">' + gt.spEmoji + ' Sprint</div>' +
-        '<div class="tab tab-bj ' + (G.stilTab==='bj'?'active':'') + '" onclick="G.stilTab=\'bj\';visAlleSlut()">' + gt.bjEmoji + ' Bjerg</div>' +
+        '<div class="tab tab-gc ' + (G.stilTab==='gc'?'active':'') + '" onclick="G.stilTab=\'gc\';visAlleSlut()">🟡 Samlet</div>' +
+        '<div class="tab tab-sp ' + (G.stilTab==='sp'?'active':'') + '" onclick="G.stilTab=\'sp\';visAlleSlut()">🟢 Sprint</div>' +
+        '<div class="tab tab-bj ' + (G.stilTab==='bj'?'active':'') + '" onclick="G.stilTab=\'bj\';visAlleSlut()">🔴 Bjerg</div>' +
     '</div>';
     
     html += '<div class="box" style="max-height:400px;overflow-y:auto"><h3>Komplet liste:</h3>';
@@ -3225,9 +3376,9 @@ function visAlleSlut() {
         var med = "";
         var visTal = true;
         if (pos === 1) {
-            if (G.stilTab === "gc") { med = gt.gcEmoji + " "; visTal = false; }
-            else if (G.stilTab === "sp") { med = gt.spEmoji + " "; visTal = false; }
-            else { med = gt.bjEmoji + " "; visTal = false; }
+            if (G.stilTab === "gc") { med = "🟡 "; visTal = false; }
+            else if (G.stilTab === "sp") { med = "🟢 "; visTal = false; }
+            else { med = "🔴 "; visTal = false; }
         }
         var numTxt = visTal ? pos + '. ' : '';
         html += '<div class="' + cls + '"><span>' + med + numTxt + r.navn + ' <span style="color:' + r.holdClr + '">' + r.holdAbbr + '</span></span>' +
@@ -3240,16 +3391,14 @@ function visAlleSlut() {
     R(html);
 }
 
-// ========== TILPASSET visAlleResultater() ==========
-
 function visAlleResultater() {
-    var gt = getGT();
     var res = G.gemtRes;
     var e = G.etaper[G.enr];
     var vTid = res[0] ? res[0].tid : 0;
     
-    var html = '<h2 style="color:' + gt.primary + '">🏁 ETAPE ' + e.nr + ' - ALLE RESULTATER</h2>';
-    html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">' + e.start + ' → ' + e.slut + ' | ' + e.dist + ' km</div>';
+    var html = '<h2>🏁 ETAPE ' + e.nr + ' - ALLE RESULTATER</h2>';
+    html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">' + 
+            e.start + ' → ' + e.slut + ' | ' + e.dist + ' km</div>';
     
     html += '<div class="box" style="max-height:400px;overflow-y:auto"><h3>Komplet resultatliste:</h3>';
     
@@ -3272,6 +3421,7 @@ function visAlleResultater() {
     html += '</div>';
     
     html += '<div class="ctrls ctrls-2"><button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="tilbageTilResultat()">← TILBAGE</button></div>';
+
     
     R(html);
 }
@@ -3361,7 +3511,7 @@ function ft(s) {
 }
 function ec(e, m) { return (e/m) < 0.25 ? "low" : (e/m) < 0.5 ? "med" : ""; }
 function $(id) { return document.getElementById(id); }
-function R(h) { document.getElementById("game").innerHTML = h; }
+function R(h) { document.getElementById("game").innerHTML = erstatGTHtml(h); }
 function findInArr(arr, fn) { for (var i = 0; i < arr.length; i++) { if (fn(arr[i])) return arr[i]; } return null; }
 function findIdx(arr, fn) { for (var i = 0; i < arr.length; i++) { if (fn(arr[i])) return i; } return -1; }
 
@@ -3503,48 +3653,24 @@ function genMP(e) {
     return mps;
 }
 
-// ========== SIMULERINGSMOTOR ==========
-// loop(), startNorm(), aiUdb(), tilbyd(), accUdb(), rejUdb(), accel(), pause(),
-// chkIndhent(), chkMP(), fusionGrupper(), flytTilGruppetto(), rensGrupper(),
-// aiAngrebBjerg(), aiAngrebKuperet(), aiAngrebEnergi(),
-// favoritAngrebSlut(), favoritAngrebMidtvejs(), favoritAngrebKuperet()
-//
-// ALLE disse funktioner er UÆNDREDE fra originalen.
-// Kopiér dem direkte fra den originale kode.
-// Den eneste ændring er i loop() hvor restitution-linjer erstattes,
-// men det sker allerede via afslut() og afslutTT() i sektion 4.
-//
-// For at spare plads inkluderer jeg dem IKKE her.
-// Du skal kopiere alle disse funktioner fra din originale kode
-// og indsætte dem her. De virker uden ændringer.
-
-// [INDSÆT HER: startNorm, loop, alle aiAngreb-funktioner, 
-//  tilbyd, accUdb, rejUdb, accel, pause, chkIndhent, chkMP,
-//  fusionGrupper, flytTilGruppetto, rensGrupper, 
-//  startTT, loopTT, accTT, rendTT, tegnTTP]
-
-// ========== TILPASSET rend() ==========
-// Hovedrender-funktionen med GT-tema
-
 function rend() {
-    var gt = getGT();
     var e = G.etaper[G.enr];
     var info = ETYPER[e.type];
     var r = G.spiller;
     var sg = findInArr(G.grp, function(g) { return g.ryt.indexOf(r) >= 0; });
     
-    var foersteGrp = G.grp[0];
-    var koertKm = foersteGrp ? foersteGrp.pos : 0;
-    var visningsTid = Math.round(koertKm * info.sek);
+    // Beregn korrekt tid baseret på position og gennemsnitshastighed
+    var førsteGrp = G.grp[0];
+    var kørtKm = førsteGrp ? førsteGrp.pos : 0;
+    var visningsTid = Math.round(kørtKm * info.sek);
     
-    // Modal: Udbrud
     var mod = "";
     if (G.vent && G.udata) {
         var d = G.udata;
         var medTxt = d.med.length > 0 ? d.med.length + " vil med!" : "Solo?";
         var dis = r.energi < d.cost ? " disabled" : "";
-        mod = '<div class="modal"><div class="mbox">' +
-            '<h2 style="color:' + gt.primary + '">⚡ UDBRUD?</h2>' +
+		mod = '<div class="modal"><div class="mbox">' +
+            '<h2 style="color:#ff0">⚡ UDBRUD?</h2>' +
             '<p>' + medTxt + '</p><p class="warn">Koster: ' + Math.round(d.cost / getMaxEnergi(r) * 100) + '%</p>' +
             '<p>Din energi: ' + getVisEnergi(r) + '%</p>' +
             '<div style="margin-top:12px">' +
@@ -3553,7 +3679,6 @@ function rend() {
             '</div></div></div>';
     }
     
-    // Modal: Pause
     var pmod = "";
     if (!G.iv && !G.vent) {
         pmod = '<div class="modal"><div class="mbox" style="border-color:#3399ff">' +
@@ -3562,132 +3687,189 @@ function rend() {
             '</div></div>';
     }
     
-    // Trøjebærere
+    // Find trøjebærere til farveberegning
     var aktiveRyttere = G.ryttere.filter(function(r) { return !r.ude; });
     var gcLeder = aktiveRyttere.slice().sort(function(a,b) { return a.stid - b.stid; })[0];
     var spLeder = aktiveRyttere.slice().sort(function(a,b) { return (G.sprPts[b.navn]||0) - (G.sprPts[a.navn]||0); })[0];
     var bjLeder = aktiveRyttere.slice().sort(function(a,b) { return (G.bjgPts[b.navn]||0) - (G.bjgPts[a.navn]||0); })[0];
 
-    // Grupper HTML
     var gh = '<div style="display:flex;flex-wrap:wrap;gap:4px">';
     for (var i = 0; i < G.grp.length; i++) {
         var g = G.grp[i];
         var her = g.ryt.indexOf(r) >= 0;
         var farve = getGruppeFarve(g, r, gcLeder, spLeder, bjLeder);
-        
-        // Gruppens navn-logik (uændret fra original)
-        var grpNavn = g.navn;
-        var erForrest = true;
-        for (var gi2 = 0; gi2 < G.grp.length; gi2++) { if (G.grp[gi2].pos > g.pos) { erForrest = false; break; } }
-        var feltGrp = findInArr(G.grp, function(gg) { return gg.type === "felt"; });
-        
-        if (g.ryt.length === 1) { grpNavn = g.ryt[0].navn.split(" ").pop(); }
-        else if (erForrest) { grpNavn = g.type === "felt" ? "Feltet" : g.type === "udbrud" ? "Udbrud" : "Førende"; }
-        else if (feltGrp && g.type === "udbrud" && g.pos < feltGrp.pos) { grpNavn = "Bagud"; }
-        else if (feltGrp && g.type === "udbrud" && g.pos > feltGrp.pos) { grpNavn = "Forfølgere"; }
-        else if (g.type === "gruppetto") {
-            if (feltGrp && g.pos > feltGrp.pos) grpNavn = "Forfølgere";
-            else {
-                var erBagerst = true;
-                for (var gi2 = 0; gi2 < G.grp.length; gi2++) { if (G.grp[gi2].pos < g.pos) { erBagerst = false; break; } }
-                grpNavn = (erBagerst && (e.type === "bjerg" || e.type === "kuperet")) ? "Gruppetto" : "Bagud";
+        var et = G.etaper[G.enr];
+var et = G.etaper[G.enr];
+var grpNavn = g.navn;
+
+// Find om dette er den forreste gruppe
+var erForrest = true;
+for (var gi2 = 0; gi2 < G.grp.length; gi2++) {
+    if (G.grp[gi2].pos > g.pos) {
+        erForrest = false;
+        break;
+    }
+}
+
+// Find feltet (hovedfelt)
+var feltGrp = findInArr(G.grp, function(gg) { return gg.type === "felt"; });
+
+// Hvis gruppen kun har én rytter, brug rytterens navn
+if (g.ryt.length === 1) {
+    grpNavn = g.ryt[0].navn.split(" ").pop();
+} else if (erForrest) {
+    // Forreste gruppe hedder altid noget passende
+    if (g.type === "felt") {
+        grpNavn = "Feltet";
+    } else if (g.type === "udbrud") {
+        grpNavn = "Udbrud"; 
+    } else {
+        grpNavn = "Førende gruppe";
+    }
+} else if (feltGrp && g.type === "udbrud" && g.pos < feltGrp.pos) {
+    // Udbrud der ligger BAG feltet = bagud
+    grpNavn = "Bagud";
+} else if (feltGrp && g.type === "udbrud" && g.pos > feltGrp.pos) {
+    // Udbrud der ligger MELLEM forreste gruppe og feltet = Forfølgere
+    grpNavn = "Forfølgere";
+} else if (g.type === "gruppetto") {
+    if (feltGrp) {
+        if (g.pos > feltGrp.pos) {
+            // Gruppetto-type foran feltet = forfølgere/bagved en anden frontgruppe
+            grpNavn = "Forfølgere";
+        } else {
+            // Find om dette er den bagerste gruppe
+            var erBagerst = true;
+            for (var gi2 = 0; gi2 < G.grp.length; gi2++) {
+                if (G.grp[gi2].pos < g.pos) {
+                    erBagerst = false;
+                    break;
+                }
+            }
+            if (erBagerst && (et.type === "bjerg" || et.type === "kuperet")) {
+                grpNavn = "Gruppetto";
+            } else {
+                grpNavn = "Bagud";
             }
         }
+    } else {
+        // Ingen feltgruppe (fx kaotisk situation) – kald bare "Bagud"
+        grpNavn = "Bagud";
+    }
+}
 
         var emo = g.type === "udbrud" ? "🚴💨" : g.type === "felt" ? "🚴🚴🚴" : "🚴";
         var tid = g.tf < 1 ? '<span style="color:' + farve.text + '">FORREST</span>' : '<span style="color:' + farve.text + '">+' + ft(g.tf) + '</span>';
         
-        var sorteretRyt = g.ryt.slice().sort(function(a, b) { return a.stid - b.stid; });
-        var navne = "";
-        var vis = Math.min(sorteretRyt.length, 5);
-        for (var j = 0; j < vis; j++) {
-            var rr = sorteretRyt[j];
-            var kort = rr.navn.split(" ").pop();
-            var rFarve = rr.sp ? "#fff" : rr.holdClr;
-            var rWeight = rr.sp ? ";font-weight:bold" : "";
-            navne += '<span style="color:' + rFarve + rWeight + '">' + kort + '</span>';
-            if (j < vis - 1) navne += ", ";
-        }
-        if (g.ryt.length > 5) navne += ' <span style="color:#666">+' + (g.ryt.length - 5) + '</span>';
+// Sortér gruppens ryttere efter samlet klassement (lavest stid først)
+var sorteretRyt = g.ryt.slice().sort(function(a, b) { return a.stid - b.stid; });
+
+var navne = "";
+var vis = Math.min(sorteretRyt.length, 5);
+for (var j = 0; j < vis; j++) {
+    var rr = sorteretRyt[j];
+    var kort = rr.navn.split(" ").pop();
+    var rFarve = rr.sp ? "#fff" : rr.holdClr;
+    var rWeight = rr.sp ? ";font-weight:bold" : "";
+    navne += '<span style="color:' + rFarve + rWeight + '">' + kort + '</span>';
+    if (j < vis - 1) navne += ", ";
+}
+if (g.ryt.length > 5) {
+    navne += ' <span style="color:#666">+' + (g.ryt.length - 5) + '</span>';
+}
         
-        var boxStyle = 'border:' + (her ? '3px' : '2px') + ' solid ' + farve.border + ';background:' + farve.bg + ';' +
+        var boxStyle = 'border:' + (her ? '3px' : '2px') + ' solid ' + farve.border + ';' +
+            'background:' + farve.bg + ';' +
             (her ? 'box-shadow:0 0 10px ' + farve.border + '4;' : '') +
             'padding:8px;margin:4px;border-radius:4px;font-size:12px;display:inline-block;vertical-align:top;min-width:200px';
         
-        var visAntal = ' (' + g.ryt.length + ')';
-        gh += '<div style="' + boxStyle + '">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;color:' + farve.text + '">' +
-            '<span>' + emo + ' ' + grpNavn + visAntal + (her ? ' ◄' : '') + '</span>' +
-            '<span style="margin-left:10px">Km ' + Math.floor(g.pos) + '</span></div>' +
+        var visAntal = (g.type !== "udbrud" || grpNavn.indexOf("(") === -1) ? ' (' + g.ryt.length + ')' : '';
+gh += '<div style="' + boxStyle + '">' +
+'<div style="display:flex;justify-content:space-between;align-items:center;color:' + farve.text + '">' +
+'<span>' + emo + ' ' + grpNavn + visAntal + (her ? ' ◄' : '') + '</span>' +
+'<span style="margin-left:10px">Km ' + Math.floor(g.pos) + '</span></div>' +
             '<div>' + tid + '</div>' +
             '<div style="font-size:10px">' + navne + '</div></div>';
     }
     gh += '</div>';
     
-    // Trøjer
-    var jer = getSimJerseyHtml();
+	var jer = getSimJerseyHtml();
     
-    // Mellempunktsresultat
-    var mpRes = "";
-    if (G.lastMpResult) {
-        var mpr = G.lastMpResult;
-        var icon = mpr.type === "sprint" ? gt.spEmoji : gt.bjEmoji;
-        var items = "";
-        for (var i = 0; i < mpr.top10.length; i++) {
-            var x = mpr.top10[i];
-            var mfarve = x.sp ? 'style="color:#fff;font-weight:bold"' : '';
-            items += '<span ' + mfarve + '>' + (i+1) + '. ' + x.navn.split(" ").pop() + ' (+' + x.pts + ')</span>';
-            if (i < mpr.top10.length - 1) items += " | ";
-        }
-        mpRes = '<div class="mp-result"><h4>' + icon + ' ' + (mpr.type === "sprint" ? "SPRINT" : "BJERG") + '</h4><div style="font-size:10px">' + items + '</div></div>';
+var mpRes = "";
+if (G.lastMpResult) {
+    var mpr = G.lastMpResult;
+    var icon = mpr.type === "sprint" ? "🟢" : "🔴";
+    var items = "";
+    for (var i = 0; i < mpr.top10.length; i++) {
+        var x = mpr.top10[i];
+        var farve = x.sp ? 'style="color:#fff;font-weight:bold"' : '';
+        items += '<span ' + farve + '>' + (i+1) + '. ' + x.navn.split(" ").pop() + ' (+' + x.pts + ')</span>';
+        if (i < mpr.top10.length - 1) items += " | ";
     }
+    mpRes = '<div class="mp-result"><h4>' + icon + ' ' + (mpr.type === "sprint" ? "SPRINT" : "BJERG") + '</h4>' +
+        '<div style="font-size:10px">' + items + '</div></div>';
+}
     
     var typeClr = e.type === 'bjerg' ? '#f44' : e.type === 'kuperet' ? '#f80' : e.type === 'tt' ? '#0ff' : '#0f0';
     var visEnergi = getVisEnergi(r);
     var eClass = ec(visEnergi, 100);
     var eTxtClass = visEnergi < 25 ? 'bad' : visEnergi < 50 ? 'warn' : 'ok';
     
-    var sgFarve = sg ? getGruppeFarve(sg, r, gcLeder, spLeder, bjLeder) : { border: gt.feltColor, bg: gt.feltBg, text: gt.feltColor };
+    var sgFarve = sg ? getGruppeFarve(sg, r, gcLeder, spLeder, bjLeder) : { border: "#6af", bg: "#035", text: "#6af" };
     var pTxt = sg && sg.tf < 1 ? "Forrest" : "+" + ft(sg ? sg.tf : 0);
     var pClass = sg && sg.tf < 1 ? 'ok' : 'warn';
     var aDis = r.energi < 3 || G.vent ? " disabled" : "";
     var pDis = G.vent ? " disabled" : "";
     var pBtn = G.iv ? "PAUSE" : "FORTSÆT";
     
+    // Beregn gennemsnitshastighed
+    var gnsHastighed = visningsTid > 0 ? Math.round((kørtKm / visningsTid) * 3600 * 10) / 10 : 0;
+    
     R(mod + pmod +
-    // KNAPPER
-    '<div style="background:' + gt.bg + ';padding:8px;margin-bottom:8px;border:1px solid ' + gt.secondary + ';border-radius:4px;text-align:center">' +
+    // KNAPPER ØVERST
+    '<div style="background:#110;padding:8px;margin-bottom:8px;border:1px solid #aa0;border-radius:4px;text-align:center">' +
         '<button class="btn btn-big btn-y" onclick="accel()" style="min-width:140px"' + aDis + '>[A] ACCELERER</button>' +
         '<button class="btn btn-big" onclick="pause()" style="min-width:140px"' + pDis + '>[P] ' + pBtn + '</button>' +
     '</div>' +
-    // DESKTOP TOP BAR
-    '<div class="top-bar-desktop" style="display:flex;align-items:center;padding:8px;background:' + gt.bg + ';border:1px solid ' + gt.secondary + ';border-radius:4px;margin-bottom:8px">' +
-        '<div style="flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><strong>Etape ' + e.nr + ':</strong> ' + e.start + ' → ' + e.slut + '</div>' +
-        '<div style="display:flex;align-items:center;justify-content:center;gap:15px">' +
-            '<span style="padding:4px 10px;border:2px solid ' + typeClr + ';color:' + typeClr + ';border-radius:10px;font-size:12px;width:70px;text-align:center">' + info.n.toUpperCase() + '</span>' +
-            '<span class="cyan" style="font-size:20px;font-weight:bold;width:145px;text-align:center">Km ' + G.km + '/' + e.dist + '</span>' +
-            '<span style="width:100px;text-align:center">' + getStigningVis() + '</span>' +
-        '</div>' +
-        '<div style="flex:1;text-align:right;"><div class="time-display" style="display:inline-block;border-color:' + gt.primary + '">⏱️ ' + ft(visningsTid) + '</div></div>' +
+ // ETAPE INFO
+// -- Desktop Version --
+'<div class="top-bar-desktop" style="display:flex;align-items:center;padding:8px;background:#110;border:1px solid #aa0;border-radius:4px;margin-bottom:8px">' +
+    '<div style="flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><strong>Etape ' + e.nr + ':</strong> ' + e.start + ' → ' + e.slut + '</div>' +
+    '<div style="display:flex;align-items:center;justify-content:center;gap:15px">' +
+        '<span style="padding:4px 10px;border:2px solid ' + typeClr + ';color:' + typeClr + ';border-radius:10px;font-size:12px;width:70px;text-align:center">' + info.n.toUpperCase() + '</span>' +
+        '<span class="cyan" style="font-size:20px;font-weight:bold;width:145px;text-align:center">Km ' + G.km + '/' + e.dist + '</span>' +
+        '<span style="width:100px;text-align:center">' + getStigningVis() + '</span>' +
     '</div>' +
-    // MOBIL TOP BAR
-    '<div class="top-bar-mobile" style="background:' + gt.bg + ';border:1px solid ' + gt.secondary + ';border-radius:4px;margin-bottom:8px;padding:8px;text-align:center;">' +
-        '<div style="font-size:14px;margin-bottom:8px;"><strong>Etape ' + e.nr + ':</strong> ' + e.start + ' → ' + e.slut + '</div>' +
-        '<div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:8px;">' +
-            '<span style="padding:4px 10px;border:2px solid ' + typeClr + ';color:' + typeClr + ';border-radius:10px;font-size:12px;width:70px;text-align:center">' + info.n.toUpperCase() + '</span>' +
-            '<span class="cyan" style="font-size:18px;font-weight:bold;">Km ' + G.km + '/' + e.dist + '</span>' +
-        '</div>' +
-        '<div style="display:flex;justify-content:space-around;align-items:center;">' +
-            '<span style="width:100px;text-align:center">' + getStigningVis() + '</span>' +
-            '<div class="time-display" style="border-color:' + gt.primary + ';padding:6px 12px">⏱️ ' + ft(visningsTid) + '</div>' +
-        '</div>' +
+    '<div style="flex:1;text-align:right;">' +
+	    '<div class="time-display" style="display:inline-block;border-color:#ff0">⏱️ ' + ft(visningsTid) + '</div>' +
+	'</div>' +
+
+'</div>' +
+
+// -- Mobil Version --
+'<div class="top-bar-mobile" style="background:#110;border:1px solid #aa0;border-radius:4px;margin-bottom:8px;padding:8px;text-align:center;">' +
+    // Række 1: Etape Info
+    '<div style="font-size:14px;margin-bottom:8px;"><strong>Etape ' + e.nr + ':</strong> ' + e.start + ' → ' + e.slut + '</div>' +
+    // Række 2 (NU): Type og KM
+    '<div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:8px;">' +
+        '<span style="padding:4px 10px;border:2px solid ' + typeClr + ';color:' + typeClr + ';border-radius:10px;font-size:12px;width:70px;text-align:center">' + info.n.toUpperCase() + '</span>' +
+        '<span class="cyan" style="font-size:18px;font-weight:bold;">Km ' + G.km + '/' + e.dist + '</span>' +
     '</div>' +
+    // Række 3 (NU): Stigning og Tid
+    '<div style="display:flex;justify-content:space-around;align-items:center;">' +
+        '<span style="width:100px;text-align:center">' + getStigningVis() + '</span>' +
+        '<div class="time-display" style="border-color:#ff0;padding:6px 12px">⏱️ ' + ft(visningsTid) + '</div>' +
+    '</div>' +
+'</div>' +
     '<canvas id="cv"></canvas>' + jer +
     '<div class="box" style="padding:10px;display:flex;flex-wrap:wrap;gap:15px;align-items:center">' +
-        '<div><strong>Energi:</strong> <div class="ebar"><div class="efill ' + eClass + '" style="width:' + visEnergi + '%"></div></div> <span class="' + eTxtClass + '">' + visEnergi + '%</span></div>' +
-        '<div><strong>Gruppe:</strong> <span style="color:' + sgFarve.text + ';font-weight:bold">' + (sg ? sg.navn : "?") + '</span></div>' +
-        '<div><strong>Position:</strong> <span style="color:' + sgFarve.text + '">' + pTxt + '</span></div>' +
-    '</div>' +
+        '<div><strong>Energi:</strong> <div class="ebar"><div class="efill ' + eClass + '" style="width:' + visEnergi + '%"></div></div> ' +
+        '<span class="' + eTxtClass + '">' + visEnergi + '%</span></div>' +
+    '<div><strong>Gruppe:</strong> <span style="color:' + sgFarve.text + ';font-weight:bold">' + (sg ? sg.navn : "?") + '</span></div>' +
+    '<div><strong>Position:</strong> <span style="color:' + sgFarve.text + '">' + pTxt + '</span></div>' +
+'</div>' +
+
+
     (G.msg ? '<div style="padding:10px;border:2px solid #f80;background:#210;border-radius:6px;text-align:center;margin:8px 0">' + G.msg + '</div>' : '') +
     mpRes + gh);
     
@@ -3996,8 +4178,8 @@ function rytterInfo(hold, orig) {
         '<div class="sbar"><span class="lbl">Udholdenhed:</span><div class="bg"><div class="fill" style="width:'+r.ud+'%;background:#f80"></div></div><span>'+r.ud+'</span></div>' +
         '<div class="sbar"><span class="lbl">Restitution:</span><div class="bg"><div class="fill" style="width:'+r.re+'%;background:#a4f"></div></div><span>'+r.re+'</span></div>' +
     '</div>' + msg +
-    '<div class="ctrls">' + rerollBtn + 
-    '<button class="btn btn-big btn-y" onclick="visSaesonValg()">🏁 VÆLG GRAND TOURS 🏁</button></div>');
+    '<div class="ctrls rytter-ctrls">' + rerollBtn + 
+	'<button class="btn btn-big btn-y start-btn" onclick="visSaesonValg()"><span class="desktop-txt">🏁 START 🏁</span><span class="mobil-txt">VÆLG RYTTER</span></button></div>');
 }
 
 function vaelgSvaerhed(niveau) {
@@ -4035,12 +4217,9 @@ function rerollRytter() {
     rytterInfo(holdNavn, rd);
 }
 
-// ========== KOMPLET genererResume() MED GT-TILPASNINGER ==========
-// Alle ændringer er markeret med "// GT:" kommentarer
-
 function genererResume(res, erTT, udeRyttere) {
-    var gt = getGT(); // GT: Hent aktiv Grand Tour config
-    var e = G.etaper[G.enr];
+    var gt = getGT();
+	var e = G.etaper[G.enr];
     var vinder = res[0] ? res[0].r : null;
     var spiEfternavn = G.navn.split(" ").pop();
     var spiRes = null;
@@ -4054,6 +4233,7 @@ function genererResume(res, erTT, udeRyttere) {
         }
     }
     
+    // Hent klassement-data
     var aktive = G.ryttere.filter(function(r) { return !r.ude; });
     var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var spS = aktive.slice().sort(function(a,b) { return (G.sprPts[b.navn]||0) - (G.sprPts[a.navn]||0); });
@@ -4063,6 +4243,10 @@ function genererResume(res, erTT, udeRyttere) {
     var spLeder = spS[0];
     var bjLeder = bjS[0];
     
+    // Find forrige etapes trøjebærere fra ETAPE_HISTORIK
+    // gemEtapeHistorik() er allerede kaldt FØR genererResume(),
+    // så den SIDSTE entry i ETAPE_HISTORIK er DENNE etape.
+    // Vi skal bruge den NÆSTSIDSTE for "forrige etape".
     var tidligereGcLeder = null;
     var tidligereSpLeder = null;
     var tidligereBjLeder = null;
@@ -4073,14 +4257,15 @@ function genererResume(res, erTT, udeRyttere) {
         tidligereBjLeder = forrige.bjLeder;
     }
     var erFoersteEtape = (ETAPE_HISTORIK.length <= 1);
-    var alleredeNaevnteKollaps = {};
+	var alleredeNaevnteKollaps = {};
 
-    // GC FØR/EFTER
+// ===== BEREGN GC-FØR / EFTER =====
     var spiGC = -1;
     for (var i = 0; i < gcS.length; i++) {
         if (gcS[i].sp) { spiGC = i; break; }
     }
 
+    // Hent forrige etapes GC-placering fra historik
     var spiGCFoer = -1;
     if (ETAPE_HISTORIK.length >= 2) {
         spiGCFoer = ETAPE_HISTORIK[ETAPE_HISTORIK.length - 2].spiGCPlads;
@@ -4092,62 +4277,95 @@ function genererResume(res, erTT, udeRyttere) {
     var erGcLeder = (spiGC === 0);
     var varGcLeder = (spiGCFoer === 1);
 
-    var gcGabNu = (spiGC > 0) ? Math.round(G.spiller.stid - gcS[0].stid) : 0;    
-    
+    // Beregn GC-gab ændring robust via historik
+    // gcGabNu = spillerens tid til GC-leder NU (positiv = bagud)
+	var gcGabNu = (spiGC > 0) ? Math.round(G.spiller.stid - gcS[0].stid) : 0;    
+	
+    // gcGabFoer = spillerens tid til GC-leder FØR denne etape
     var gcGabFoer = 0;
     if (!erFoersteEtape && ETAPE_HISTORIK.length >= 2) {
         var forrigeHistorik = ETAPE_HISTORIK[ETAPE_HISTORIK.length - 2];
+        // Find spillerens og lederens tider fra forrige etape
         if (forrigeHistorik.gcTop3 && forrigeHistorik.gcTop3.length > 0) {
             var lederTidFoer = forrigeHistorik.gcTop3[0].tid;
+            // Find spillerens samlede tid FØR denne etape
             var spiEtapeTid = spiRes ? spiRes.tid : 0;
             var spiStidFoer = G.spiller.stid - spiEtapeTid;
+            // Find hvem der var GC-leder før og deres tid før
+            var forrigeLeder = forrigeHistorik.gcLeder;
+            var forrigeLederStidFoer = lederTidFoer;
+            
             if (forrigeHistorik.spiGCPlads === 1) {
+                // Spilleren VAR leder - gabet var 0
                 gcGabFoer = 0;
             } else {
-                gcGabFoer = spiStidFoer - lederTidFoer;
+                gcGabFoer = spiStidFoer - forrigeLederStidFoer;
             }
         }
     }
     
     var gcGabAendring = gcGabNu - gcGabFoer;
     
+    // Sikkerhedscheck: Hvis spilleren rykkede OP i klassementet, 
+    // men gcGabAendring siger han tabte tid, er beregningen forkert
     var gcGabPaalidelig = true;
-    if (placeringAendring > 0 && gcGabAendring > 60) gcGabPaalidelig = false;
-    if (placeringAendring < -3 && gcGabAendring < -60) gcGabPaalidelig = false;
+    if (placeringAendring > 0 && gcGabAendring > 60) {
+        // Spilleren rykkede op men beregningen siger tidstab - upålidelig
+        gcGabPaalidelig = false;
+    }
+    if (placeringAendring < -3 && gcGabAendring < -60) {
+        // Spilleren faldt mange pladser men beregningen siger tidsgevinst - upålidelig
+        gcGabPaalidelig = false;
+    }
 
-    // VINDERENS SITUATION
+// ===== BEREGN VINDERENS SITUATION =====
+    // Vandt vinderen solo, i lille gruppe, eller i massespurt?
     var vinderDiff = (res.length >= 2) ? Math.round(res[1].tid - res[0].tid) : 0;
-    var vinderVandtSolo = vinderDiff >= 5;
+    var vinderVandtSolo = vinderDiff >= 5; // 5+ sekunder = solo
     var vinderErSprinter = vinder && vinder.spr > 85;
+    var vinderErOverraskelse = vinder && vinder.spr < 75 && vinder.gc < 80;
     
+    // Tæl hvor mange der kom ind på vinderens tid (inden for 3 sekunder)
     var vinderGruppeStr = 0;
     for (var i = 0; i < res.length; i++) {
-        if (Math.round(res[i].tid - res[0].tid) <= 3) vinderGruppeStr++;
-        else break;
+        if (Math.round(res[i].tid - res[0].tid) <= 3) {
+            vinderGruppeStr++;
+        } else {
+            break;
+        }
     }
+    // Find gap til næste gruppe (første rytter med > 3 sek forskel)
     var gapTilFelt = 0;
     if (vinderGruppeStr < res.length) {
         gapTilFelt = Math.round(res[vinderGruppeStr].tid - res[0].tid);
     }
+    // Massespurt = stor gruppe (30+) kom ind sammen
+    // Lille gruppe = under 30 ryttere med stort gap til resten
     var varMasseSpurt = vinderGruppeStr >= 30;
     var varLilleGruppe = !vinderVandtSolo && vinderGruppeStr < 30 && gapTilFelt >= 30;
     
+    // Find hvornår vinderen stak af (sidste angreb fra vinderen)
     var vinderAngrebKm = -1;
     if (vinder && vinderVandtSolo) {
         for (var i = 0; i < HOEJDEPUNKTER.length; i++) {
             var h = HOEJDEPUNKTER[i];
-            if (h.type === "angreb" && h.data.rytter === vinder.navn) vinderAngrebKm = Math.round(h.km);
+            if (h.type === "angreb" && h.data.rytter === vinder.navn) {
+                vinderAngrebKm = Math.round(h.km);
+            }
         }
     }
+    // Find hvornår spilleren stak af (til solo-finish tekst)
     var spillerAngrebKm = -1;
     if (vinder && vinder.sp && vinderVandtSolo) {
         for (var i = 0; i < HOEJDEPUNKTER.length; i++) {
             var h = HOEJDEPUNKTER[i];
-            if (h.type === "angreb" && h.data.rytter === G.spiller.navn) spillerAngrebKm = Math.round(h.km);
+            if (h.type === "angreb" && h.data.rytter === G.spiller.navn) {
+                spillerAngrebKm = Math.round(h.km);
+            }
         }
     }
     
-    // KATEGORISER HØJDEPUNKTER
+    // ===== KATEGORISER HØJDEPUNKTER =====
     var angreb = HOEJDEPUNKTER.filter(function(h) { return h.type === "angreb"; });
     var gcKollaps = HOEJDEPUNKTER.filter(function(h) { return h.type === "gc_kollaps"; });
     var daarligeDage = HOEJDEPUNKTER.filter(function(h) { return h.type === "daarlig_dag"; });
@@ -4158,11 +4376,14 @@ function genererResume(res, erTT, udeRyttere) {
 
     var spillerKollapsEvent = null;
     for (var i = 0; i < gcKollaps.length; i++) {
-        if (gcKollaps[i].data.rytter === G.spiller.navn) { spillerKollapsEvent = gcKollaps[i]; break; }
+        if (gcKollaps[i].data.rytter === G.spiller.navn) {
+            spillerKollapsEvent = gcKollaps[i];
+            break;
+        }
     }
     
-    // VIGTIGSTE KOLLAPS
-    var vigtigsteKollaps = null;
+    // ===== FIND VIGTIGSTE KOLLAPS TIL OVERSKRIFT =====
+var vigtigsteKollaps = null;
     var vigtigsteKollapsNavn = "";
     
     var gulTroejeBaerer = tidligereGcLeder || (gcS[0] ? gcS[0].navn : null);
@@ -4172,14 +4393,17 @@ function genererResume(res, erTT, udeRyttere) {
     for (var si = 0; si < superStjerner.length; si++) {
         if (prioritetsNavne.indexOf(superStjerner[si]) < 0) prioritetsNavne.push(superStjerner[si]);
     }
+    // Inkluder IKKE spilleren her - spillerens kollaps håndteres separat
     
     for (var pi = 0; pi < prioritetsNavne.length; pi++) {
         var pNavn = prioritetsNavne[pi];
+        // Check at rytteren er i top 10 i GC
         var erITop10 = false;
         for (var gi = 0; gi < Math.min(10, gcS.length); gi++) {
             if (gcS[gi].navn === pNavn) { erITop10 = true; break; }
         }
         if (!erITop10) continue;
+        
         for (var ki = 0; ki < gcKollaps.length; ki++) {
             if (gcKollaps[ki].data.rytter === pNavn) {
                 vigtigsteKollaps = gcKollaps[ki];
@@ -4189,74 +4413,131 @@ function genererResume(res, erTT, udeRyttere) {
         }
         if (vigtigsteKollaps) break;
     }
+	
+    // ===== GENERER OVERSKRIFT =====
+var overskrift = "";
     
-    // SPILLERENS KOLLAPS DRAMATIK
+    // Beregn om spillerens kollaps er dramatisk
     var spillerKollapsErDramatisk = false;
     if (spillerKollapsEvent) {
+        // Dramatisk hvis: i top 10, OG under 30 min bagud, OG ikke stadig GC-leder eller podium
         var varITop10 = spiGCFoer <= 10;
+        var underHalvTimeBagud = gcGabFoer < 1800;
         var falderFraPodium = spiGCFoer <= 3 && (spiGC + 1) > 3;
         var misterGult = varGcLeder && !erGcLeder;
-        if ((varITop10 && !erGcLeder && (spiGC + 1) > 3) || falderFraPodium || misterGult) {
+        
+        if ((varITop10 && underHalvTimeBagud && !erGcLeder && (spiGC + 1) > 3) || falderFraPodium || misterGult) {
             spillerKollapsErDramatisk = true;
         }
     }
     
+    // Beregn om andres kollaps er dramatisk (skal være i top 10 i stillingen)
     var vigtigsteKollapsErDramatisk = false;
     if (vigtigsteKollaps) {
         var kollapsRytterNavn = vigtigsteKollaps.data.rytter;
         for (var ki = 0; ki < gcS.length; ki++) {
             if (gcS[ki].navn === kollapsRytterNavn && ki < 10) {
-                var rObj = null;
-                for (var ri3 = 0; ri3 < G.ryttere.length; ri3++) {
-                    if (G.ryttere[ri3].navn === kollapsRytterNavn) { rObj = G.ryttere[ri3]; break; }
+                // Var de i top 10 FØR denne etape?
+                if (ETAPE_HISTORIK.length >= 2) {
+                    var forrigeTop = ETAPE_HISTORIK[ETAPE_HISTORIK.length - 2].gcTop3;
+                    // Check om de var i top 10 (vi har kun top3 gemt, men check GC)
+                    var rObj = null;
+                    for (var ri3 = 0; ri3 < G.ryttere.length; ri3++) {
+                        if (G.ryttere[ri3].navn === kollapsRytterNavn) { rObj = G.ryttere[ri3]; break; }
+                    }
+                    if (rObj && rObj.gc > 82) {
+                        vigtigsteKollapsErDramatisk = true;
+                    }
+                } else {
+                    vigtigsteKollapsErDramatisk = true;
                 }
-                if (rObj && rObj.gc > 82) vigtigsteKollapsErDramatisk = true;
                 break;
             }
         }
     }
-
-    // Tæl etapesejre
-    var totaleSejre = 0;
-    for (var i = 0; i < ETAPE_HISTORIK.length; i++) {
-        if (ETAPE_HISTORIK[i].spiEtapePlads === 1) totaleSejre++;
-    }
-    var totalGuleDage = 0;
-    for (var i = 0; i < ETAPE_HISTORIK.length; i++) {
-        if (ETAPE_HISTORIK[i].gcLeder === G.spiller.navn) totalGuleDage++;
-    }
-
-    function fmtTidstab(sek) {
-        sek = Math.round(Math.abs(sek));
-        if (sek < 60) return sek + " sekunder";
-        return ft(sek);
-    }
-
-    // ===== GENERER OVERSKRIFT =====
-    var overskrift = "";
     
     if (vinder && vinder.sp) {
+        // Spilleren vinder - varierede overskrifter
         var vinderDiffSpi = (res.length >= 2) ? Math.round(res[1].tid - res[0].tid) : 0;
+        
         if (vinderDiffSpi >= 180) {
-            overskrift = "MAGTDEMONSTRATION! " + spiEfternavn.toUpperCase() + " SMADRER KONKURRENTERNE!";
+            // Over 3 minutter foran
+            var magtOvk = [
+                "MAGTDEMONSTRATION! " + spiEfternavn.toUpperCase() + " SMADRER KONKURRENTERNE!",
+                spiEfternavn.toUpperCase() + " KNUSER ALT OG ALLE!",
+                "TOTALT OVERLEGEN! " + spiEfternavn.toUpperCase() + " VINDER MED " + fmtTidstab(vinderDiffSpi) + "!",
+                spiEfternavn.toUpperCase() + " DEMOLERER FELTET!"
+            ];
+            overskrift = magtOvk[ri(0, magtOvk.length - 1)];
         } else if (vinderDiffSpi >= 60) {
-            var stOvk = ["SUVERÆN! " + spiEfternavn.toUpperCase() + " VINDER STORT!", spiEfternavn.toUpperCase() + " KØRER ALLE AF HJULET!"];
-            overskrift = stOvk[ri(0, stOvk.length - 1)];
+            // Over 1 minut foran
+            var stærkOvk = [
+                "SUVERÆN! " + spiEfternavn.toUpperCase() + " VINDER STORT!",
+                spiEfternavn.toUpperCase() + " KØRER ALLE AF HJULET!",
+                "OVERLEGEN SEJR TIL " + spiEfternavn.toUpperCase() + "!",
+                spiEfternavn.toUpperCase() + " ER I EN KLASSE FOR SIG!"
+            ];
+            overskrift = stærkOvk[ri(0, stærkOvk.length - 1)];
         } else if (vinderDiffSpi <= 3 && !erTT) {
-            overskrift = "FOTOFINISH! " + spiEfternavn.toUpperCase() + " VINDER PÅ STREGEN!";
+            // Tæt spurt
+            var spurtOvk = [
+                "FOTOFINISH! " + spiEfternavn.toUpperCase() + " VINDER PÅ STREGEN!",
+                spiEfternavn.toUpperCase() + " SNUPPER SEJREN I SPURTEN!",
+                "TÆT KAMP! " + spiEfternavn.toUpperCase() + " ER HURTIGST!",
+                "DRAMA PÅ STREGEN! " + spiEfternavn.toUpperCase() + " VINDER!"
+            ];
+            overskrift = spurtOvk[ri(0, spurtOvk.length - 1)];
         } else if (erTT) {
-            overskrift = spiEfternavn.toUpperCase() + " VINDER ENKELTSTARTEN!";
+            var ttOvk = [
+                spiEfternavn.toUpperCase() + " VINDER ENKELTSTARTEN!",
+                "TIDSKØRSEL I VERDENSKLASSE! " + spiEfternavn.toUpperCase() + " SEJRER!",
+                spiEfternavn.toUpperCase() + " SÆTTER BEDSTE TID!"
+            ];
+            overskrift = ttOvk[ri(0, ttOvk.length - 1)];
         } else if (totaleSejre >= 3) {
-            overskrift = spiEfternavn.toUpperCase() + " GØR DET IGEN! SEJR NR. " + totaleSejre + "!";
+            var serieOvk = [
+                spiEfternavn.toUpperCase() + " GØR DET IGEN! SEJR NR. " + totaleSejre + "!",
+                "USTOPPELIG! " + spiEfternavn.toUpperCase() + " TAGER " + totaleSejre + ". ETAPESEJR!",
+                spiEfternavn.toUpperCase() + " SAMLER PÅ ETAPESEJRE!"
+            ];
+            overskrift = serieOvk[ri(0, serieOvk.length - 1)];
         } else {
-            overskrift = "TRIUMF! " + spiEfternavn.toUpperCase() + " VINDER ETAPEN!";
+            var normalOvk = [
+                "TRIUMF! " + spiEfternavn.toUpperCase() + " VINDER ETAPEN!",
+                spiEfternavn.toUpperCase() + " TAGER ETAPESEJREN!",
+                "SEJR TIL " + spiEfternavn.toUpperCase() + " I " + e.slut.toUpperCase() + "!",
+                spiEfternavn.toUpperCase() + " PÅ TOPPEN AF PODIET!"
+            ];
+            overskrift = normalOvk[ri(0, normalOvk.length - 1)];
         }
-    } else if (spillerKollapsErDramatisk) {
+	} else if (spillerKollapsErDramatisk) {
         overskrift = "KATASTROFE! " + spiEfternavn.toUpperCase() + " GÅR HELT KOLD!";
     } else if (vigtigsteKollapsErDramatisk) {
+        // Check om den nævnte rytter faktisk vandt etapen - hvis ja, find en anden vinkel
         var kollapsRytterVandt = (vigtigsteKollaps && vinder && vigtigsteKollaps.data.rytter === vinder.navn);
         if (kollapsRytterVandt) {
-            overskrift = "BRUTAL ETAPE! FAVORITTERNE KNÆKKER!";
+            // Tæl totale kollaps
+            var antalKollaps = gcKollaps.length;
+            if (antalKollaps >= 5) {
+                overskrift = "MASSAKRE I BJERGENE! " + antalKollaps + " FAVORITTER GÅR KOLD!";
+            } else if (antalKollaps >= 3) {
+                overskrift = "BRUTAL ETAPE! FAVORITTERNE KNÆKKER!";
+            } else {
+                // Find en anden kollaps-rytter til overskriften
+                var andenKollaps = null;
+                for (var ki2 = 0; ki2 < gcKollaps.length; ki2++) {
+                    var kNavn2 = gcKollaps[ki2].data.rytter;
+                    if (kNavn2 !== vinder.navn && kNavn2 !== G.spiller.navn) {
+                        andenKollaps = kNavn2;
+                        break;
+                    }
+                }
+                if (andenKollaps) {
+                    overskrift = "DRAMA! " + andenKollaps.split(" ").pop().toUpperCase() + " KRAKELERER!";
+                } else {
+                    overskrift = vinder.navn.split(" ").pop() + " vinder trods kollaps i " + e.slut;
+                }
+            }
         } else {
             overskrift = "DRAMA! " + vigtigsteKollapsNavn.toUpperCase() + " KRAKELERER!";
         }
@@ -4267,158 +4548,421 @@ function genererResume(res, erTT, udeRyttere) {
     } else if (vinder) {
         var vinderEfternavn = vinder.navn.split(" ").pop();
         if (e.type === "bjerg") {
-            overskrift = vinderEfternavn + " suveræn i bjergene";
+            var bjergOvk = [
+                "Uimodståelig " + vinderEfternavn + " i " + e.slut,
+                vinderEfternavn + " suveræn i bjergene",
+                vinderEfternavn + " flyver over bjergene"
+            ];
+            overskrift = bjergOvk[ri(0, bjergOvk.length - 1)];
         } else if (e.type === "tt") {
             overskrift = vinderEfternavn + " dominerer enkeltstart";
         } else if (e.type === "kuperet") {
-            overskrift = vinderEfternavn + " vinder på de hårde bakker";
+            var kupOvk = [
+                vinderEfternavn + " vinder på de hårde bakker",
+                vinderEfternavn + " slår til på kuperet terrain",
+                "Stærke " + vinderEfternavn + " i " + e.slut
+            ];
+            overskrift = kupOvk[ri(0, kupOvk.length - 1)];
         } else {
-            if (vinderVandtSolo) overskrift = "Overraskelse: " + vinderEfternavn + " vinder solo i " + e.slut;
-            else overskrift = "Kaotisk massespurt: " + vinderEfternavn + " hurtigst";
+            if (vinderVandtSolo) {
+                var fladSoloOvk = [
+                    "Overraskelse: " + vinderEfternavn + " vinder solo i " + e.slut,
+                    vinderEfternavn + " stikker af og vinder i " + e.slut,
+                    "Uventet solo-sejr til " + vinderEfternavn
+                ];
+                overskrift = fladSoloOvk[ri(0, fladSoloOvk.length - 1)];
+            } else {
+                var fladOvk = [
+                    "Kaotisk massespurt: " + vinderEfternavn + " hurtigst",
+                    vinderEfternavn + " tager spurtsejren i " + e.slut,
+                    "Nervekrig i feltet – " + vinderEfternavn + " vinder"
+                ];
+                overskrift = fladOvk[ri(0, fladOvk.length - 1)];
+            }
         }
     } else {
         overskrift = "Etape " + e.nr + " er i hus";
     }    
     
-    // ===== BRØDTEKST =====
+// ===== GENERER BRØDTEKST =====
     var afsnit = [];
-    
-    // INTRO
+	
+    // ===== INTRO =====
     var intro = "";
     if (erTT) {
         intro = "Den " + e.dist + " km lange enkeltstart blev afviklet i et hæsblæsende tempo.";
-    } else if (e.type === "bjerg") {
-        if (angreb.length >= 4) {
-            intro = "Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " bød på mange angreb mellem favoritterne.";
-        } else if (gcKollaps.length > 0) {
-            var kollapsNavne = [];
-            for (var i = 0; i < gcKollaps.length; i++) {
-                var kRytter = gcKollaps[i].data.rytter;
-                if (kRytter === G.spiller.navn) continue;
-                var kRytterObj = null;
-                for (var j = 0; j < G.ryttere.length; j++) {
-                    if (G.ryttere[j].navn === kRytter) { kRytterObj = G.ryttere[j]; break; }
-                }
-                if (kRytterObj && kRytterObj.gc > 84) {
-                    var kNavn = kRytter.split(" ").pop();
-                    if (kollapsNavne.indexOf(kNavn) < 0) { kollapsNavne.push(kNavn); alleredeNaevnteKollaps[kRytter] = true; }
-                }
-            }
-            if (kollapsNavne.length >= 2) {
-                intro = "Dagens bjergetape til " + e.slut + " blev skæbnesvanger. " + kollapsNavne[0] + " og " + kollapsNavne[1] + " kollapsede.";
-            } else if (kollapsNavne.length === 1) {
-                intro = "Dagens bjergetape til " + e.slut + " blev en sort dag for " + kollapsNavne[0] + ".";
-            } else {
-                intro = "Dagens " + e.dist + " km lange bjergetape til " + e.slut + " bød på kontrolleret kørsel.";
-            }
-        } else {
-            intro = "Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " bød på kontrolleret kørsel blandt favoritterne.";
-        }
-    } else if (e.type === "kuperet") {
-        intro = "Dagens " + e.dist + " km lange kuperede etape fra " + e.start + " til " + e.slut + " bød på hård kamp.";
     } else {
-        if (vinderVandtSolo && !vinderErSprinter) {
-            intro = "Dagens flade etape til " + e.slut + " fik en overraskende finale. Den forventede massespurt udeblev.";
-        } else if (indhentninger.length > 0 && udbrud.length > 0) {
-            intro = "Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " fulgte det velkendte mønster: udbrud, jagt og massespurt.";
+        var introVarianter = [];
+        
+        if (e.type === "bjerg") {
+            if (angreb.length >= 10) {
+                introVarianter.push("Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " udviklede sig til en regulær angrebsfest.");
+            } else if (angreb.length >= 4) {
+                introVarianter.push("Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " bød på mange angreb mellem favoritterne.");
+                introVarianter.push("Der blev angrebet fra flere sider på den " + e.dist + " km lange bjergetape til " + e.slut + ".");
+				} else if (gcKollaps.length > 0) {
+			                var kollapsNavne = [];
+			                for (var i = 0; i < gcKollaps.length; i++) {
+			                    var kRytter = gcKollaps[i].data.rytter;
+			                    if (kRytter === G.spiller.navn) continue;
+			                    var kRytterObj = null;
+			                    for (var j = 0; j < G.ryttere.length; j++) {
+			                        if (G.ryttere[j].navn === kRytter) { kRytterObj = G.ryttere[j]; break; }
+			                    }
+			                    if (kRytterObj && kRytterObj.gc > 84) {
+			                        var kNavn = kRytter.split(" ").pop();
+			                        if (kollapsNavne.indexOf(kNavn) < 0) {
+			                            kollapsNavne.push(kNavn);
+			                            alleredeNaevnteKollaps[kRytter] = true;
+			                        }
+			                    }
+			                }
+			                if (kollapsNavne.length >= 3) {
+			                    introVarianter.push("Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " blev en katastrofe for favoritterne. " + kollapsNavne.slice(0, -1).join(", ") + " og " + kollapsNavne[kollapsNavne.length - 1] + " knækkede alle på bjergene og tabte store bidder af tid.");
+			                } else if (kollapsNavne.length === 2) {
+			                    introVarianter.push("Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " blev skæbnesvanger. Både " + kollapsNavne[0] + " og " + kollapsNavne[1] + " kollapsede og tabte kostbar tid.");
+			                } else if (kollapsNavne.length === 1) {
+			                    introVarianter.push("Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " blev en sort dag for " + kollapsNavne[0] + ", der løb tør for kræfter.");
+			                } else {
+			                    introVarianter.push("Dagens " + e.dist + " km lange bjergetape fra " + e.start + " til " + e.slut + " bød på kontrolleret kørsel blandt favoritterne.");
+			                    introVarianter.push("Feltet tog fat på dagens " + e.dist + " km lange bjergetape med respekt for de ventende stigninger, men uden de helt vilde angreb.");
+			                }
+			}
+        } else if (e.type === "kuperet") {
+            if (angreb.length > 3) {
+                introVarianter.push("Dagens " + e.dist + " km lange kuperede etape fra " + e.start + " til " + e.slut + " var præget af konstante angreb.");
+            } else {
+                introVarianter.push("Dagens " + e.dist + " km lange kuperede etape fra " + e.start + " til " + e.slut + " bød på hård kamp på de mange bakker.");
+                introVarianter.push("De " + e.dist + " kilometer fra " + e.start + " til " + e.slut + " viste sig at være hårdere end højdemetrene antydede.");
+            }
         } else {
-            intro = "De " + e.dist + " flade kilometer fra " + e.start + " til " + e.slut + " forløb uden de store dramaer.";
+            // ===== FLAD ETAPE INTRO - TILPAS TIL FAKTISK RESULTAT =====
+			if (vinderVandtSolo && !vinderErSprinter) {
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " fik en overraskende finale. Den forventede massespurt udeblev.");
+                introVarianter.push("Sprinterholdene mistede kontrollen på den " + e.dist + " km lange flade etape til " + e.slut + ", og det endte aldrig i massespurt.");
+                introVarianter.push("Det så ud til en rolig dag for sprinterne, men den " + e.dist + " km lange etape til " + e.slut + " fik en helt anderledes afslutning.");
+            } else if (vinderVandtSolo && vinderErSprinter) {
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " endte med en uventet solo-sejr.");
+                introVarianter.push("De " + e.dist + " kilometer fra " + e.start + " til " + e.slut + " bød på en utraditionel afslutning.");
+            } else if (varLilleGruppe) {
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " endte med en reduceret spurt efter at en lille gruppe slap væk.");
+                introVarianter.push("Sprinterholdene mistede kontrollen på den " + e.dist + " km lange flade etape til " + e.slut + ", og kun en lille gruppe kæmpede om sejren.");
+                introVarianter.push("En lille gruppe slog hul til feltet på de " + e.dist + " kilometer fra " + e.start + " til " + e.slut + ", og feltet nåede aldrig op.");
+            } else if (indhentninger.length > 0 && udbrud.length > 0) {
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " fulgte det velkendte mønster: udbrud, jagt og massespurt.");
+                introVarianter.push("På dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " fik udbruddene ingen snor, og blev hentet på vej mod mål.");
+                introVarianter.push("De " + e.dist + " kilometer fra " + e.start + " til " + e.slut + " blev kontrolleret af sprinterholdene, der sørgede for massespurt.");
+            } else if (udbrud.length > 0 && indhentninger.length === 0 && vinderVandtSolo) {
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " blev præget af et udbrud der holdt helt til mål.");
+                introVarianter.push("Sprinterholdene fik aldrig lukket hullet på den " + e.dist + " km lange etape til " + e.slut + ".");
+            } else if (udbrud.length > 0) {
+                introVarianter.push("På de " + e.dist + " flade kilometer fra " + e.start + " til " + e.slut + " forsøgte flere ryttere at slippe væk fra feltet.");
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " bød på udbrudsforsøg fra eventyrlyste ryttere.");
+            } else {
+                introVarianter.push("Dagens " + e.dist + " km lange flade etape fra " + e.start + " til " + e.slut + " var kontrolleret fra start til slut.");
+                introVarianter.push("Sprinterholdene holdt sammen på feltet gennem de " + e.dist + " kilometer fra " + e.start + " til " + e.slut + ".");
+                introVarianter.push("De " + e.dist + " flade kilometer fra " + e.start + " til " + e.slut + " forløb uden de store dramaer.");
+            }
         }
+        
+        intro = introVarianter[ri(0, introVarianter.length - 1)];
     }
     afsnit.push(intro);
     
-    // ANGREB
-    if (e.type !== "flad" && angreb.length > 0) {
+    // ===== UDBRUD OG ANGREB =====
+    if (e.type === "flad" && udbrud.length > 0 && indhentninger.length > 0 && !vinderVandtSolo && !varLilleGruppe) {
+        // Kun nævn udbrud der blev hentet hvis det faktisk endte i massespurt
+        var stoersteUdbrud = 0;
+        for (var i = 0; i < udbrud.length; i++) {
+            if (udbrud[i].data.antal > stoersteUdbrud) stoersteUdbrud = udbrud[i].data.antal;
+        }
+        if (stoersteUdbrud >= 3) {
+            var udbrudTekster = [
+                "Et udbrud forsøgte sig tidligt, men blev hentet hurtigt igen.",
+                "Dagens udbrud kæmpede, men feltet lod dem aldrig få noget forspring.",
+                "Lykkeridderne fik knap nok lov at drømme, da sprinterholdene hurtigt hentede dem tilbage."
+            ];
+            afsnit.push(udbrudTekster[ri(0, udbrudTekster.length - 1)]);
+        }
+    } else if (e.type !== "flad" && angreb.length > 0) {
+        // BJERG/KUPERET: Beskriv det FØRSTE angreb (hvem satte gang i det)
         var foersteAngreb = angreb[0];
         var kmFraMaal = Math.round(e.dist - foersteAngreb.km);
+        
+        // Tæl unikke angribere
+        var angriberNavne = [];
+        for (var i = 0; i < angreb.length; i++) {
+            var aNavn = angreb[i].data.rytter;
+            if (angriberNavne.indexOf(aNavn) < 0) angriberNavne.push(aNavn);
+        }
+        var rigtigeAngreb = angriberNavne.length;
+        
+        var angrebTekster = [];
+        var introNaevnteAngreb = intro.indexOf("angreb") >= 0 || intro.indexOf("Angreb") >= 0;
         var foersteNavn = foersteAngreb.data.rytter.split(" ").pop();
-        afsnit.push(foersteNavn + " satte det første angreb ind " + kmFraMaal + " km fra mål.");
+        
+        if (introNaevnteAngreb) {
+            // Introen nævnte allerede angreb - vær kort
+            angrebTekster.push("Det var " + foersteNavn + " der åbnede ballet med " + kmFraMaal + " km til mål.");
+            angrebTekster.push(foersteNavn + " var den første til at angribe, " + kmFraMaal + " km fra mål.");
+        } else if (rigtigeAngreb >= 5) {
+            angrebTekster.push("Det var " + foersteNavn + " der åbnede angrebsfesten " + kmFraMaal + " km fra mål, og derefter fulgte en lang række af forsøg.");
+        } else if (rigtigeAngreb >= 3) {
+            angrebTekster.push(foersteNavn + " satte det første angreb ind " + kmFraMaal + " km fra mål, og flere fulgte efter.");
+            angrebTekster.push("Med " + kmFraMaal + " km tilbage åbnede " + foersteNavn + " angrebene.");
+        } else if (rigtigeAngreb >= 1) {
+            if (kmFraMaal <= 5) {
+                angrebTekster.push(foersteNavn + " angreb tæt på mål med " + kmFraMaal + " km tilbage.");
+            } else {
+                angrebTekster.push(foersteNavn + " satte det første angreb ind " + kmFraMaal + " km fra mål.");
+                angrebTekster.push("Med " + kmFraMaal + " km tilbage angreb " + foersteNavn + ".");
+            }
+        }
+        
+        if (angrebTekster.length > 0) {
+            afsnit.push(angrebTekster[ri(0, angrebTekster.length - 1)]);
+        }
+	} else if (e.type === "flad" && vinderVandtSolo && angreb.length > 0) {
+        // Solo-finish på flad beskrives allerede i etaperesultat-sektionen
+        // Ingen ekstra tekst her
+    } else if (udbrud.length > 0 && e.type !== "flad") {
+        var stoersteUdbrud = 0;
+        for (var i = 0; i < udbrud.length; i++) {
+            if (udbrud[i].data.antal > stoersteUdbrud) stoersteUdbrud = udbrud[i].data.antal;
+        }
+        if (stoersteUdbrud >= 4) {
+            var bjergUdbrudTekster = [
+                "Et stort udbrud fik lov at køre afsted tidligt på etapen.",
+                "Flere ryttere forsøgte lykken i et tidligt udbrud.",
+                "Dagen startede med et stort udbrud, men favoritterne holdt øje."
+            ];
+            afsnit.push(bjergUdbrudTekster[ri(0, bjergUdbrudTekster.length - 1)]);
+        }
     }
 
-    // KOLLAPS
-    if (gcKollaps.length > 0) {
+// ===== ÆGTE KOLLAPS (energi=0) =====
+	if (gcKollaps.length > 0) {
         var vigtigeKollaps = [];
+        
         for (var i = 0; i < gcKollaps.length; i++) {
             var kollaps = gcKollaps[i].data;
-            if (kollaps.rytter === G.spiller.navn) continue;
-            if (alleredeNaevnteKollaps[kollaps.rytter]) continue;
+            var kollapsNavn = kollaps.rytter;
+            
+            // Spring spilleren over her - nævnes separat i spillerafsnittet
+            if (kollapsNavn === G.spiller.navn) continue;
+            
+            // Spring over hvis allerede nævnt i introen
+            if (alleredeNaevnteKollaps[kollapsNavn]) continue;
+            
             var erVigtig = false;
+            // Kun vigtig hvis rytteren er i top 10 i GC
             for (var j = 0; j < gcS.length; j++) {
-                if (gcS[j].navn === kollaps.rytter && j < 10) { erVigtig = true; break; }
+                if (gcS[j].navn === kollapsNavn && j < 10) {
+                    erVigtig = true;
+                    break;
+                }
             }
+            
             if (erVigtig) {
-                var alleredeTilf = false;
-                for (var k = 0; k < vigtigeKollaps.length; k++) { if (vigtigeKollaps[k].rytter === kollaps.rytter) { alleredeTilf = true; break; } }
-                if (!alleredeTilf) { vigtigeKollaps.push(kollaps); alleredeNaevnteKollaps[kollaps.rytter] = true; }
+                var alleredeTilføjet = false;
+                for (var k = 0; k < vigtigeKollaps.length; k++) {
+                    if (vigtigeKollaps[k].rytter === kollapsNavn) { alleredeTilføjet = true; break; }
+                }
+                if (!alleredeTilføjet) {
+                    vigtigeKollaps.push(kollaps);
+                    alleredeNaevnteKollaps[kollapsNavn] = true;
+                }
             }
         }
+        
         if (vigtigeKollaps.length === 1) {
-            afsnit.push(vigtigeKollaps[0].rytter.split(" ").pop() + " løb helt tør for kræfter og tabte store mængder tid.");
-        } else if (vigtigeKollaps.length >= 2) {
+            var k = vigtigeKollaps[0];
+            afsnit.push(k.rytter.split(" ").pop() + " løb helt tør for kræfter og tabte store mængder tid til konkurrenterne.");
+        } else if (vigtigeKollaps.length === 2) {
+            afsnit.push("Både " + vigtigeKollaps[0].rytter.split(" ").pop() + " og " + vigtigeKollaps[1].rytter.split(" ").pop() + " gik helt kold og løb tør for kræfter. Begge tabte kostbar tid.");
+        } else if (vigtigeKollaps.length >= 3) {
             var navne = [];
             for (var i = 0; i < vigtigeKollaps.length; i++) navne.push(vigtigeKollaps[i].rytter.split(" ").pop());
-            afsnit.push("Flere favoritter gik kold: " + navne.join(", ") + ".");
+            var sidsteNavn = navne.pop();
+            afsnit.push("Det var en massakre! " + navne.join(", ") + " og " + sidsteNavn + " løb alle tør for kræfter og gik helt kold.");
         }
     }
-
-    // DÅRLIGE DAGE
+	
+// ===== DÅRLIGE DAGE =====
     if (daarligeDage.length > 0) {
         var vigtigeDaarlige = [];
         for (var i = 0; i < daarligeDage.length; i++) {
             var dd = daarligeDage[i].data;
+            // Spring altid spilleren over - nævnes separat
             if (dd.rytter === G.spiller.navn) continue;
+            // Spring over hvis allerede nævnt i intro eller kollaps
             if (alleredeNaevnteKollaps[dd.rytter]) continue;
             var alleredeKollaps = false;
-            for (var ki = 0; ki < gcKollaps.length; ki++) { if (gcKollaps[ki].data.rytter === dd.rytter) { alleredeKollaps = true; break; } }
+            for (var ki = 0; ki < gcKollaps.length; ki++) {
+                if (gcKollaps[ki].data.rytter === dd.rytter) { alleredeKollaps = true; break; }
+            }
             if (alleredeKollaps) continue;
+            // Kun vigtig hvis i top 10 i GC
             var erVigtig = false;
-            for (var j = 0; j < gcS.length; j++) { if (gcS[j].navn === dd.rytter && j < 10) { erVigtig = true; break; } }
+            for (var j = 0; j < gcS.length; j++) {
+                if (gcS[j].navn === dd.rytter && j < 10) { erVigtig = true; break; }
+            }
             if (erVigtig) {
-                var alleredeTilf = false;
-                for (var k = 0; k < vigtigeDaarlige.length; k++) { if (vigtigeDaarlige[k].rytter === dd.rytter) { alleredeTilf = true; break; } }
-                if (!alleredeTilf) { vigtigeDaarlige.push(dd); alleredeNaevnteKollaps[dd.rytter] = true; }
+                var alleredeTilføjet = false;
+                for (var k = 0; k < vigtigeDaarlige.length; k++) {
+                    if (vigtigeDaarlige[k].rytter === dd.rytter) { alleredeTilføjet = true; break; }
+                }
+                if (!alleredeTilføjet) {
+                    vigtigeDaarlige.push(dd);
+                    alleredeNaevnteKollaps[dd.rytter] = true;
+                }
             }
         }
-        if (vigtigeDaarlige.length >= 1) {
+        
+        if (vigtigeDaarlige.length === 1) {
+            afsnit.push(vigtigeDaarlige[0].rytter.split(" ").pop() + " havde en dårlig dag og tabte " + ft(vigtigeDaarlige[0].tidstab) + " til de bedste.");
+        } else if (vigtigeDaarlige.length === 2) {
+            afsnit.push(vigtigeDaarlige[0].rytter.split(" ").pop() + " og " + vigtigeDaarlige[1].rytter.split(" ").pop() + " havde begge en dag til glemmebogen og mistede vigtig tid i klassementet.");
+        } else if (vigtigeDaarlige.length >= 3) {
             var navne = [];
-            for (var i = 0; i < Math.min(3, vigtigeDaarlige.length); i++) navne.push(vigtigeDaarlige[i].rytter.split(" ").pop());
-            afsnit.push(navne.join(" og ") + " havde en dårlig dag og tabte tid.");
+            for (var i = 0; i < Math.min(4, vigtigeDaarlige.length); i++) navne.push(vigtigeDaarlige[i].rytter.split(" ").pop());
+            var sidsteNavn = navne.pop();
+            afsnit.push("Flere favoritter havde en hård dag. " + navne.join(", ") + " og " + sidsteNavn + " tabte alle tid til de bedste.");
         }
     }
-
-    // ETAPERESULTAT
-    if (vinder && !erTT) {
-        var vinderNavn = vinder.navn.split(" ").pop();
-        if (vinderDiff === 0 && varLilleGruppe) {
-            afsnit.push(vinderNavn + " vandt spurten i en lille gruppe på " + vinderGruppeStr + " ryttere, " + fmtTidstab(gapTilFelt) + " foran feltet.");
-        } else if (vinderDiff === 0) {
-            afsnit.push(vinderNavn + " tog sejren i en tæt spurt.");
-        } else if (vinderDiff < 5) {
-            afsnit.push(vinderNavn + " vandt med blot " + vinderDiff + " sekunder.");
+	
+    // BJERGSPURTER
+    if (bjerge.length > 0 && (e.type === "bjerg" || e.type === "kuperet")) {
+        var bjergVindere = [];
+        for (var i = 0; i < bjerge.length; i++) {
+            var bvn = bjerge[i].data.vinder.split(" ").pop();
+            if (bjergVindere.indexOf(bvn) < 0) bjergVindere.push(bvn);
+        }
+        if (bjerge.length === 1) {
+            afsnit.push("På dagens bjergspurt var det " + bjergVindere[0] + " der kom først over.");
+        } else if (bjergVindere.length === 1) {
+            afsnit.push(bjergVindere[0] + " dominerede og tog alle " + bjerge.length + " bjergspurter.");
+        } else if (bjergVindere.length === 2) {
+            afsnit.push("Bjergspurterne blev vundet af " + bjergVindere[0] + " og " + bjergVindere[1] + ".");
         } else {
+            afsnit.push("Bjergspurterne blev fordelt mellem " + bjergVindere.slice(0, -1).join(", ") + " og " + bjergVindere[bjergVindere.length - 1] + ".");
+        }
+    }
+    
+    // MELLEMSPURTER
+    if (sprints.length > 0 && (e.type === "flad" || e.type === "kuperet")) {
+        var sprintVindere = [];
+        for (var i = 0; i < sprints.length; i++) {
+            var svn = sprints[i].data.vinder.split(" ").pop();
+            if (sprintVindere.indexOf(svn) < 0) sprintVindere.push(svn);
+        }
+        if (sprints.length === 1) {
+            afsnit.push("I dagens indlagte spurt var " + sprintVindere[0] + " hurtigst.");
+        } else if (sprintVindere.length === 1) {
+            afsnit.push(sprintVindere[0] + " vandt begge dagens indlagte spurter og scorede vigtige point til den grønne trøje.");
+        } else if (sprintVindere.length === 2) {
+            afsnit.push("Dagens to indlagte spurter blev vundet af " + sprintVindere[0] + " og " + sprintVindere[1] + ".");
+        } else {
+            afsnit.push("De indlagte spurter blev fordelt mellem " + sprintVindere.slice(0, -1).join(", ") + " og " + sprintVindere[sprintVindere.length - 1] + ".");
+        }
+    }
+    
+    // ===== ETAPERESULTAT =====
+    if (vinder && !erTT) {
+        var vinderNavn = vinder.navn.split(" ").pop();    
+		if (vinderDiff === 0 && varLilleGruppe) {
+	            // Find størrelsen på gruppen bag vindergruppen
+	            var bagvedGruppeStr = 0;
+	            var bagvedStart = vinderGruppeStr;
+	            if (bagvedStart < res.length) {
+	                var bagvedTid = res[bagvedStart].tid;
+	                for (var i = bagvedStart; i < res.length; i++) {
+	                    if (Math.round(res[i].tid - bagvedTid) <= 3) {
+	                        bagvedGruppeStr++;
+	                    } else {
+	                        break;
+	                    }
+	                }
+	            }
+	            var bagvedTekst;
+	            if (bagvedGruppeStr >= 30) {
+	                bagvedTekst = "foran feltet";
+	            } else if (bagvedGruppeStr >= 5) {
+	                bagvedTekst = "foran forfølgergruppen";
+	            } else if (bagvedGruppeStr >= 2) {
+	                bagvedTekst = "foran forfølgerne";
+	            } else {
+	                bagvedTekst = "foran resten";
+	            }
+	            afsnit.push(vinderNavn + " vandt spurten om etapen i en lille gruppe på " + vinderGruppeStr + " ryttere, " + fmtTidstab(gapTilFelt) + " " + bagvedTekst + ".");
+	        } else if (vinderDiff === 0) {
+	            afsnit.push(vinderNavn + " tog sejren i en tæt spurt foran " + 
+	                       (res[1] ? res[1].r.navn.split(" ").pop() : "feltet") + ".");
+        } else if (vinderDiff < 5) {
+            afsnit.push(vinderNavn + " kastede cyklen over stregen og vandt med blot " + vinderDiff + " sekunder.");
+		} else {
+            // Solo-sejr: nævn hvor langt fra mål angrebet kom
+            // Find hvad nr. 2 var - gruppe eller enkeltperson
+            var nr2Navn = res[1] ? res[1].r.navn.split(" ").pop() : "forfølgerne";
+            // Tæl hvor mange der kom ind på nr. 2's tid (inden for 3 sek)
             var nr2GruppeStr = 0;
-            if (res[1]) { for (var i = 1; i < res.length; i++) { if (Math.round(res[i].tid - res[1].tid) <= 3) nr2GruppeStr++; else break; } }
-            var forfTekst = nr2GruppeStr >= 30 ? "foran feltet" : nr2GruppeStr >= 5 ? "foran forfølgergruppen" : "foran forfølgerne";
-            afsnit.push(vinderNavn + " krydsede målstregen " + fmtTidstab(vinderDiff) + " " + forfTekst + ".");
+            if (res[1]) {
+                for (var i = 1; i < res.length; i++) {
+                    if (Math.round(res[i].tid - res[1].tid) <= 3) {
+                        nr2GruppeStr++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            var forfølgerTekst;
+            if (nr2GruppeStr >= 30) {
+                forfølgerTekst = "foran feltet";
+            } else if (nr2GruppeStr >= 5) {
+                forfølgerTekst = "foran forfølgergruppen";
+            } else if (nr2GruppeStr >= 2) {
+                forfølgerTekst = "foran forfølgerne";
+            } else {
+                forfølgerTekst = "foran " + nr2Navn;
+            }
+            
+            var soloTekst = "";
+            if (vinderAngrebKm >= 0) {
+                var soloKm = Math.round(e.dist - vinderAngrebKm);
+                if (soloKm > 0) {
+                    soloTekst = vinderNavn + " stak af " + soloKm + " km fra mål og krydsede målstregen " + fmtTidstab(vinderDiff) + " " + forfølgerTekst + ".";
+                } else {
+                    soloTekst = vinderNavn + " kørte solo over stregen med " + fmtTidstab(vinderDiff) + " " + forfølgerTekst + ".";
+                }
+            } else if (vinderDiff < 30) {
+                soloTekst = vinderNavn + " kørte solo over stregen med " + vinderDiff + " sekunder " + forfølgerTekst + ".";
+            } else {
+                soloTekst = vinderNavn + " krydsede målstregen " + fmtTidstab(vinderDiff) + " " + forfølgerTekst + ".";
+            }
+            afsnit.push(soloTekst);
         }
     } else if (vinder && erTT) {
         afsnit.push(vinder.navn.split(" ").pop() + " satte tiden " + ft(res[0].tid) + " som ingen kunne matche.");
     }
     
-    // GT: TRØJESITUATION - brug GT-specifikke navne
+    // ===== TRØJESITUATION =====
     if (gcLeder) {
         var gcNr2 = gcS[1];
         var gcGap = gcNr2 ? Math.round(gcNr2.stid - gcLeder.stid) : 0;
         var gcLederNavn = gcLeder.navn.split(" ").pop();
         
         var gcVerb;
-        if (erFoersteEtape) gcVerb = "tager";
-        else if (!tidligereGcLeder) gcVerb = "har";
-        else if (gcLeder.navn === tidligereGcLeder) gcVerb = "beholder";
-        else gcVerb = "erobrer";
+        if (erFoersteEtape) {
+            gcVerb = "tager";
+        } else if (!tidligereGcLeder) {
+            gcVerb = "har";
+        } else if (gcLeder.navn === tidligereGcLeder) {
+            gcVerb = "beholder";
+        } else {
+            gcVerb = "erobrer";
+        }
         
-        // GT: Brug GT-specifikt trøjenavn i stedet for "den gule trøje"
-        var troejeTekst = gcLederNavn + " " + gcVerb + " " + gt.gcNavn;
+		var troejeTekst = gcLederNavn + " " + gcVerb + " " + gt.gcNavn;
         if (gcGap === 0 && gcNr2) {
             troejeTekst += " med samme tid som " + gcNr2.navn.split(" ").pop() + "!";
         } else if (gcGap < 60 && gcNr2) {
@@ -4429,95 +4973,258 @@ function genererResume(res, erTT, udeRyttere) {
             troejeTekst += ".";
         }
         
-        // GT: Sprint-trøje med GT-specifikt navn
-        if (spLeder && (G.sprPts[spLeder.navn] || 0) > 0) {
+		if (spLeder && (G.sprPts[spLeder.navn] || 0) > 0) {
+            var spNr2 = spS[1];
+            var spGap = spNr2 ? (G.sprPts[spLeder.navn] || 0) - (G.sprPts[spNr2.navn] || 0) : 0;
             var spLederNavn = spLeder.navn.split(" ").pop();
-            troejeTekst += " " + spLederNavn + " fører " + gt.spNavn + ".";
+            var spVerb = "fører";
+            if (!erFoersteEtape && tidligereSpLeder && tidligereSpLeder !== spLeder.navn) {
+                spVerb = "overtager føringen i";
+            }
+            if (spGap === 0 && spNr2) {
+                troejeTekst += " " + spLederNavn + " deler føringen i pointkonkurrencen med " + spNr2.navn.split(" ").pop() + ".";
+            } else if (spGap < 20 && spNr2) {
+                troejeTekst += " " + spLederNavn + " " + spVerb + " pointkonkurrencen med kun " + spGap + " point til " + spNr2.navn.split(" ").pop() + ".";
+            } else {
+                troejeTekst += " " + spLederNavn + " " + spVerb + " " + gt.spNavn + ".";
+            }
         }
         
-        // GT: Bjerg-trøje med GT-specifikt navn
-        if (bjLeder && (G.bjgPts[bjLeder.navn] || 0) > 0) {
+  		 if (bjLeder && (G.bjgPts[bjLeder.navn] || 0) > 0) {
             var bjLederNavn = bjLeder.navn.split(" ").pop();
-            troejeTekst += " " + bjLederNavn + " er i front i " + gt.bjNavn + ".";
+            var bjNr2 = bjS[1];
+            var bjGap = bjNr2 ? (G.bjgPts[bjLeder.navn] || 0) - (G.bjgPts[bjNr2.navn] || 0) : 0;
+            var bjVerb = "er i front i";
+            if (!erFoersteEtape && tidligereBjLeder && tidligereBjLeder !== bjLeder.navn) {
+                bjVerb = "overtager føringen i";
+            }
+            if (bjGap === 0 && bjNr2) {
+                troejeTekst += " " + bjLederNavn + " deler føringen i bjergkonkurrencen med " + bjNr2.navn.split(" ").pop() + ".";
+            } else {
+                troejeTekst += " " + bjLederNavn + " " + bjVerb + " " + gt.bjNavn + ".";
+            }
         }
         
         afsnit.push(troejeTekst);
     }
 
-    // SPILLERENS PRÆSTATION
+    // ===== SPILLERENS PRÆSTATION =====
     var spiTekst = "";
     var spiTidstab = 0;
-    if (spiRes && res[0]) spiTidstab = Math.round(spiRes.tid - res[0].tid);
+    if (spiRes && res[0]) {
+        spiTidstab = Math.round(spiRes.tid - res[0].tid);
+    }
 
+    function fmtTidstab(sek) {
+        sek = Math.round(Math.abs(sek));
+        if (sek < 60) return sek + " sekunder";
+        return ft(sek);
+    }
+    
+    // Tæl spillerens totale etapesejre i DENNE tour (inkl. denne etape)
+    var totaleSejre = 0;
+    for (var i = 0; i < ETAPE_HISTORIK.length; i++) {
+        if (ETAPE_HISTORIK[i].spiEtapePlads === 1) totaleSejre++;
+    }
+    
+    // Tæl hvor mange etaper spilleren HAR VÆRET GC-leder
+    var totalGuleDage = 0;
+    for (var i = 0; i < ETAPE_HISTORIK.length; i++) {
+        if (ETAPE_HISTORIK[i].gcLeder === G.spiller.navn) totalGuleDage++;
+    }
+
+// 1) Ægte kollaps
     if (spillerKollapsEvent) {
         var kollapsKm = Math.round(spillerKollapsEvent.data.km || spillerKollapsEvent.km || 0);
+        
         if (spiPlads === 1) {
-            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + ", men havde heldigvis stort nok forspring.";
+            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + ", men havde heldigvis så stort et forspring at etapesejren aldrig kom i fare.";
         } else if (G.spiller.ude) {
-            // GT: Brug GT-specifikt løbsnavn
-            spiTekst = spiEfternavn + " gik helt kold og nåede ikke inden for tidsgrænsen. " + gt.loebNavn + " er slut.";
-        } else if (erGcLeder) {
-            // GT: Brug GT-specifikt trøjenavn
-            spiTekst = spiEfternavn + " gik kold ved km " + kollapsKm + ", men beholder " + gt.gcNavn + ".";
+            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + " og nåede ikke inden for tidsgrænsen. Touren er slut.";
+		} else if (erGcLeder && varGcLeder) {
+            // Beholdt gult trods kollaps
+            spiTekst = spiEfternavn + " gik kold ved km " + kollapsKm + ", men beholder den gule trøje.";
+        } else if (erGcLeder && !varGcLeder) {
+            // Overtog gult trods kollaps
+            spiTekst = spiEfternavn + " gik kold ved km " + kollapsKm + ", men overtager alligevel den gule trøje!";
+        } else if ((spiGC + 1) <= 3) {
+            // Stadig på podiet trods kollaps
+            spiTekst = spiEfternavn + " gik kold ved km " + kollapsKm + ", men holder sig på " + (spiGC + 1) + ". pladsen i klassementet.";
+        } else if (!spillerKollapsErDramatisk) {
+            // Langt bagud allerede - ikke dramatisk
+            spiTekst = spiEfternavn + " gik kold ved km " + kollapsKm + " og ligger nu nr. " + (spiGC + 1) + " i klassementet.";
+        } else if (gcGabPaalidelig && placeringAendring > 0) {
+            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + ", men havde opbygget et stort nok forspring til at rykke op til " + (spiGC + 1) + ". pladsen i klassementet.";
+		} else if (gcGabNu > 120) {
+            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + " og ligger nu " + fmtTidstab(gcGabNu) + " efter " + gt.gcNavn + " på en " + (spiGC + 1) + ". plads.";
         } else {
-            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + ". Han ligger nu nr. " + (spiGC + 1) + " i klassementet.";
+            spiTekst = spiEfternavn + " gik helt kold ved km " + kollapsKm + ". Energien var fuldstændig opbrugt. Han ligger nu nr. " + (spiGC + 1) + " i klassementet.";
         }
-    } else if (spiPlads === 1) {
-        if (totaleSejre > 1) {
-            // GT: Brug GT-specifikt løbsnavn
-            spiTekst = "Det er " + spiEfternavn + "s " + totaleSejre + ". etapesejr i dette års " + gt.kort + "!";
+    }
+		
+	// 2) Etapesejr
+    else if (spiPlads === 1) {
+        if (erGcLeder && varGcLeder && totalGuleDage > 2) {
+            spiTekst = "Det er " + spiEfternavn + "s " + totaleSejre + ". etapesejr i denne Tour.";
+        } else if (erGcLeder && !varGcLeder) {
+            if (totaleSejre === 1) {
+                spiTekst = "En drømmedag for " + spiEfternavn + ", der vinder sin første etapesejr i dette års Tour!";
+            } else {
+                spiTekst = "Det er " + spiEfternavn + "s " + totaleSejre + ". etapesejr i denne Tour. En drømmedag!";
+            }
+        } else if (totaleSejre > 1) {
+            spiTekst = "Det er " + spiEfternavn + "s " + totaleSejre + ". etapesejr i denne Tour!";
+        } else if (gcGabPaalidelig && gcGabAendring <= -60) {
+            spiTekst = "En vigtig dag for " + spiEfternavn + " der hentede " + fmtTidstab(gcGabAendring) + " i klassementet.";
         } else {
             spiTekst = "En drømmedag for " + spiEfternavn + "!";
         }
     } else if (spiPlads === 2) {
-        spiTekst = spiEfternavn + " måtte se sig slået, men andenpladsen er et flot resultat.";
-    } else if (spiPlads === 3) {
-        spiTekst = "Tredjepladsen gik til " + spiEfternavn + ".";
-    } else if (erGcLeder && varGcLeder) {
-        if (spiPlads <= 10) {
-            spiTekst = spiEfternavn + " havde en stærk dag og sluttede som nr. " + spiPlads + ".";
+        var tidTilVinder = spiRes ? Math.round(spiRes.tid - res[0].tid) : 0;
+        if (gcGabPaalidelig && gcGabAendring <= -60) {
+            spiTekst = "Andenpladsen er et flot resultat for " + spiEfternavn + ", der hentede " + fmtTidstab(gcGabAendring) + " i klassementet.";
+        } else if (gcGabPaalidelig && gcGabAendring >= 60) {
+            spiTekst = spiEfternavn + " måtte nøjes med andenpladsen og tabte " + fmtTidstab(gcGabAendring) + " i klassementet.";
+        } else if (tidTilVinder <= 3) {
+            spiTekst = spiEfternavn + " måtte se sig slået på stregen, men andenpladsen er et flot resultat.";
         } else {
-            spiTekst = spiEfternavn + " sparede kræfter i feltet.";
+            spiTekst = spiEfternavn + " kom i mål " + fmtTidstab(tidTilVinder) + " efter vinderen på en flot andenplads.";
         }
-    } else if (erGcLeder && !varGcLeder) {
-        // GT: Brug GT-specifikt trøjenavn
-        spiTekst = spiEfternavn + " erobrer " + gt.gcNavn + " med en " + spiPlads + ". plads!";
-    } else if (varGcLeder && !erGcLeder) {
-        var nyLederNavn = gcS[0] ? gcS[0].navn.split(" ").pop() : "rivalen";
-        // GT: Brug GT-specifikt trøjenavn
-        spiTekst = spiEfternavn + " mistede " + gt.gcNavn + " til " + nyLederNavn + " og ligger nu nr. " + (spiGC + 1) + ".";
-    } else {
-        if (!gcGabPaalidelig) {
-            spiTekst = spiEfternavn + " sluttede som nr. " + spiPlads + " og ligger nr. " + (spiGC + 1) + " i klassementet.";
-        } else if (gcGabAendring >= 180) {
-            spiTekst = "Det var en hård dag for " + spiEfternavn + " der tabte " + fmtTidstab(gcGabAendring) + " i klassementet. Han ligger nu nr. " + (spiGC + 1) + ".";
-        } else if (gcGabAendring >= 60) {
-            spiTekst = spiEfternavn + " tabte " + fmtTidstab(gcGabAendring) + " i klassementet og ligger nu nr. " + (spiGC + 1) + ".";
-        } else if (gcGabAendring <= -60) {
-            spiTekst = "Det var en fremragende dag for " + spiEfternavn + " der hentede " + fmtTidstab(gcGabAendring) + " i klassementet! Han ligger nu nr. " + (spiGC + 1) + ".";
+    } else if (spiPlads === 3) {
+        if (gcGabPaalidelig && gcGabAendring <= -60) {
+            spiTekst = "Tredjepladsen gik til " + spiEfternavn + ", der hentede " + fmtTidstab(gcGabAendring) + " i klassementet.";
+        } else if (gcGabPaalidelig && gcGabAendring >= 60) {
+            spiTekst = spiEfternavn + " sluttede på tredjepladsen, men tabte " + fmtTidstab(gcGabAendring) + " i klassementet.";
         } else {
-            if (spiPlads <= 10) {
-                spiTekst = "Solid dag for " + spiEfternavn + " med en " + spiPlads + ". plads.";
+            spiTekst = "Tredjepladsen gik til " + spiEfternavn + ".";
+        }
+    }
+    // 4) GC-leder der beholder trøjen
+    else if (erGcLeder && varGcLeder) {
+        if (gcGabPaalidelig && Math.round(gcGabAendring) >= 60) {
+            spiTekst = spiEfternavn + " havde en tung dag i gult og tabte " + fmtTidstab(gcGabAendring) + " til nærmeste rival, men beholdt føringen.";
+        } else if (spiPlads <= 5) {
+            spiTekst = spiEfternavn + " havde en stærk dag og sluttede som nr. " + spiPlads + ".";
+        } else if (spiPlads <= 15) {
+            spiTekst = spiEfternavn + " havde kontrol og sluttede som nr. " + spiPlads + ".";
+        } else if (erTT) {
+            spiTekst = spiEfternavn + " kørte en skuffende enkeltstart og endte som nr. " + spiPlads + ".";
+        } else if (e.type === "flad") {
+            spiTekst = spiEfternavn + " sparede kræfter i feltet.";
+        } else {
+            spiTekst = spiEfternavn + " tog ingen chancer og kørte defensivt.";
+        }
+    }
+
+    // 5) Erobrede GC-føringen (uden etapesejr)
+    else if (erGcLeder && !varGcLeder) {
+        if (spiPlads <= 5) {
+            spiTekst = "Ud over at erobre " + gt.gcNavn + " leverede " + spiEfternavn + " en fantastisk præstation med en " + spiPlads + ". plads!";
+        } else if (erTT) {
+            spiTekst = "Ud over at erobre " + gt.gcNavn + " kørte " + spiEfternavn + " en solid enkeltstart som nr. " + spiPlads + ".";
+        } else {
+            spiTekst = "Ud over at overtage " + gt.gcNavn + " kørte " + spiEfternavn + " klogt og sluttede som nr. " + spiPlads + ".";
+        }
+    }
+	
+    // 6) Mistede " + gt.gcNavn + "
+	else if (varGcLeder && !erGcLeder) {
+        var nyLederNavn = gcS[0] ? gcS[0].navn.split(" ").pop() : "rivalen";
+        var gcGabNuRundet = Math.round(gcGabNu);
+        if (gcGabNuRundet > 60) {
+            spiTekst = spiEfternavn + " mistede " + gt.gcNavn + " til " + nyLederNavn + " og ligger nu " + fmtTidstab(gcGabNuRundet) + " efter på en " + (spiGC + 1) + ". plads.";
+        } else {
+            spiTekst = spiEfternavn + " mistede " + gt.gcNavn + " til " + nyLederNavn + " og ligger nu " + gcGabNuRundet + " sekunder efter på " + (spiGC + 1) + ". pladsen.";
+        }
+    }
+
+    // 7-9) Tidstab/gevinster
+    else {
+        if (!gcGabPaalidelig) {
+            // Upålidelig beregning - brug kun placering
+            if (spiPlads <= 5) {
+                spiTekst = spiEfternavn + " var med helt fremme og sluttede på en flot " + spiPlads + ". plads. Han ligger nr. " + (spiGC + 1) + " i klassementet.";
+            } else if (spiPlads <= 10) {
+                spiTekst = erTT 
+                    ? "Solid enkeltstart for " + spiEfternavn + " med en " + spiPlads + ". plads. Han ligger nr. " + (spiGC + 1) + " i klassementet."
+                    : "Det var en solid dag for " + spiEfternavn + " med en " + spiPlads + ". plads. Han ligger nr. " + (spiGC + 1) + " i klassementet.";
+            } else if (placeringAendring > 3) {
+                spiTekst = spiEfternavn + " rykker op fra " + spiGCFoer + ". til " + (spiGC + 1) + ". pladsen i klassementet.";
+            } else if (placeringAendring < -3) {
+                spiTekst = spiEfternavn + " faldt fra " + spiGCFoer + ". til " + (spiGC + 1) + ". pladsen i klassementet.";
             } else {
-                spiTekst = spiEfternavn + " fulgte favoritterne sikkert i mål.";
+                spiTekst = spiEfternavn + " sluttede som nr. " + spiPlads + " og ligger nr. " + (spiGC + 1) + " i klassementet.";
             }
-            if (spiGC < 10 && !erFoersteEtape) spiTekst += " Han ligger nr. " + (spiGC + 1) + " i klassementet.";
+        } else {
+            var absGabAendring = Math.round(Math.abs(gcGabAendring));
+
+            if (gcGabAendring >= 480) {
+                spiTekst = "Det var en katastrofedag for " + spiEfternavn + "! Han tabte " + fmtTidstab(gcGabAendring) + " i klassementet og falder til " + (spiGC + 1) + ". pladsen.";
+            } else if (gcGabAendring >= 180) {
+                spiTekst = "Det var en hård dag for " + spiEfternavn + " der tabte " + fmtTidstab(gcGabAendring) + " i klassementet.";
+                if (placeringAendring < -3) {
+                    spiTekst += " Han faldt fra en " + spiGCFoer + ". til en " + (spiGC + 1) + ". plads.";
+                } else {
+                    spiTekst += " Han ligger nu nr. " + (spiGC + 1) + ".";
+                }
+            } else if (gcGabAendring >= 60) {
+                spiTekst = spiEfternavn + " tabte " + fmtTidstab(gcGabAendring) + " i klassementet og ligger nu nr. " + (spiGC + 1) + ".";
+            } else if (gcGabAendring <= -60) {
+                spiTekst = "Det var en fremragende dag for " + spiEfternavn + " der hentede " + fmtTidstab(gcGabAendring) + " i klassementet!";
+                if (placeringAendring >= 3) {
+                    spiTekst += " Han rykker op fra " + spiGCFoer + ". til " + (spiGC + 1) + ". pladsen.";
+                } else {
+                    spiTekst += " Han ligger nu nr. " + (spiGC + 1) + ".";
+                }
+            } else if (gcGabAendring <= -10) {
+                spiTekst = spiEfternavn + " hentede " + fmtTidstab(gcGabAendring) + " i klassementet og ligger nr. " + (spiGC + 1) + ".";
+            } else if (gcGabAendring > 10) {
+                spiTekst = spiEfternavn + " tabte " + fmtTidstab(gcGabAendring) + " i klassementet og ligger nr. " + (spiGC + 1) + ".";
+            } else {
+                // Ingen væsentlig ændring i klassementet
+                if (spiPlads <= 5) {
+                    spiTekst = spiEfternavn + " var med helt fremme og sluttede på en flot " + spiPlads + ". plads.";
+                } else if (spiPlads <= 10) {
+                    spiTekst = erTT 
+                        ? spiEfternavn + "Det var en solid enkeltstart for " + " med en " + spiPlads + ". plads."
+                        : "Det var en solid dag for " + spiEfternavn + " med en " + spiPlads + ". plads.";
+                } else if (spiPlads <= 30) {
+                    spiTekst = erTT
+                        ? spiEfternavn + " kørte en jævn enkeltstart som nr. " + spiPlads + "."
+                        : spiEfternavn + " fulgte favoritterne sikkert i mål som nr. " + spiPlads + ".";
+                } else {
+                    spiTekst = erTT
+                        ? spiEfternavn + " sluttede som nr. " + spiPlads + " på enkeltstarten."
+                        : spiEfternavn + " kom i mål med feltet.";
+                }
+                if (spiGC < 10 && !erFoersteEtape) {
+                    spiTekst += " Han ligger nr. " + (spiGC + 1) + " i klassementet.";
+                }
+            }
         }
     }
     afsnit.push(spiTekst);
 
-    // STYRT
+// STYRT
     var styrtEvents = HOEJDEPUNKTER.filter(function(h) { return h.type === "styrt"; });
-    if (styrtEvents.length >= 1) {
-        var styrtNavne = [];
-        for (var si = 0; si < styrtEvents.length; si++) styrtNavne.push(styrtEvents[si].data.rytter.split(" ").pop());
-        // GT: Brug GT-specifikt løbsnavn
-        afsnit.push(styrtNavne.join(" og ") + " måtte forlade " + gt.loebNavn + " efter styrt.");
+    if (styrtEvents.length === 1) {
+        var styrtNavn = styrtEvents[0].data.rytter.split(" ").pop();
+        afsnit.push("Etapen blev også overskygget af et styrt, der kostede " + styrtNavn + " udgangen af Touren.");
+    } else if (styrtEvents.length === 2) {
+        var styrt1 = styrtEvents[0].data.rytter.split(" ").pop();
+        var styrt2 = styrtEvents[1].data.rytter.split(" ").pop();
+        afsnit.push("To ryttere måtte forlade Touren efter styrt: " + styrt1 + " og " + styrt2 + ".");
     }
-    
-    // UDGÅEDE
+	
+    // UDGÅEDE RYTTERE
     if (udeRyttere && udeRyttere.length >= 5) {
-        afsnit.push(udeRyttere.length + " ryttere nåede ikke inden for tidsgrænsen og må forlade løbet.");
+        if (udeRyttere.length >= 20) {
+            afsnit.push("Hele " + udeRyttere.length + " ryttere nåede ikke inden for tidsgrænsen og må forlade løbet. Feltet er fuldstændig decimeret.");
+        } else if (udeRyttere.length >= 10) {
+            afsnit.push("Det var en blodig dag for feltet. " + udeRyttere.length + " ryttere udgik efter ikke at nå inden for tidsgrænsen.");
+        } else {
+            afsnit.push(udeRyttere.length + " ryttere nåede ikke inden for tidsgrænsen og må forlade Touren.");
+        }
     }
     
     // FREMADSKUENDE
@@ -4525,13 +5232,23 @@ function genererResume(res, erTT, udeRyttere) {
         var nesteE = G.etaper[G.enr + 1];
         var fremTekst = "";
         if (nesteE.type === "bjerg") {
-            fremTekst = "I morgen venter en brutal bjergetape til " + nesteE.slut + ".";
+            var bjergFrem = [
+                "I morgen venter en brutal bjergetape til " + nesteE.slut + ". Der kan ske store ting i klassementet.",
+                "Morgendagens bjergetape til " + nesteE.slut + " bliver afgørende for klassementet.",
+                "Favoritterne vil teste hinanden på morgendagens bjergetape."
+            ];
+            fremTekst = bjergFrem[ri(0, bjergFrem.length - 1)];
         } else if (nesteE.type === "tt") {
-            fremTekst = "Næste etape er en enkeltstart – sandhedens time.";
+            fremTekst = "Næste etape er en enkeltstart – sandhedens time for klassementrytterne.";
         } else if (nesteE.type === "kuperet") {
-            fremTekst = "I morgen fortsætter løbet med en kuperet etape til " + nesteE.slut + ".";
+            fremTekst = "I morgen fortsætter Touren med en kuperet etape til " + nesteE.slut + ".";
         } else {
-            fremTekst = "Sprinterne vil lugte blod på morgendagens flade etape til " + nesteE.slut + ".";
+            var fladFrem = [
+                "Sprinterne vil lugte blod på morgendagens flade etape til " + nesteE.slut + ".",
+                "Morgendagens flade etape til " + nesteE.slut + " burde ende i en massespurt.",
+                "Sprinterholdene vil kontrollere morgendagens flade etape."
+            ];
+            fremTekst = fladFrem[ri(0, fladFrem.length - 1)];
         }
         afsnit.push(fremTekst);
     }
@@ -4546,10 +5263,6 @@ function genererResume(res, erTT, udeRyttere) {
         tekst: rensetAfsnit.join("\n\n")
     };
 }
-
-// ========== UÆNDREDE SIMULERINGSMOTOR-FUNKTIONER ==========
-// Kopiér disse DIREKTE fra den originale kode.
-// De kræver INGEN ændringer.
 
 function startNorm() {
     var aktiveRyttere = G.ryttere.filter(function(r) { return !r.ude; });
