@@ -294,7 +294,7 @@
         canvas { height: 180px; }
         .row { line-height: 1.4; }
         .row span:first-child { display: flex; align-items: center; gap: 2px; }
-        .ctrls .btn-big { flex: 1 1 auto; max-width: 48%; }
+        .ctrls .btn-big { flex: 1 1 auto; }
         .ctrls-3 .btn-big { flex: 1 1 30%; min-width: 90px; }
         .svaerhed-valg { gap: 5px; }
         .svaerhed-boks { padding: 8px 10px; min-width: 90px; }
@@ -304,7 +304,7 @@
         .gt-card { min-width: 90px; padding: 10px; }
         .gt-card .gt-name { font-size: 12px; }
         .gt-card .gt-emoji { font-size: 22px; }
-        div[style*="display:flex"][style*="gap:15px"] { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; max-width: 250px; margin: 0 auto; }
+        .box div[style*="display:flex"][style*="gap:15px"] { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; max-width: 250px; margin: 0 auto; }
         #plotCanvas { height: 250px !important; }
         .plot-tabs { flex-wrap: wrap; }
         .plot-tabs .tab:first-child { flex: 0 0 100%; margin-bottom: 4px; }
@@ -1387,7 +1387,7 @@ function visSaesonValg() {
     }
     
     html += '<div class="ctrls" style="margin-top:20px">' +
-        '<button class="btn btn-big btn-y" onclick="startSaeson()"' + (G.valgteGT.length === 0 ? ' disabled' : '') + '>START SÆSON ' + G.saeson + '</button>' +
+        '<button class="btn btn-big btn-y" onclick="startSaeson()" style="white-space:nowrap"' + (G.valgteGT.length === 0 ? ' disabled' : '') + '>START SÆSON ' + G.saeson + '</button>' +
     '</div>';
     
     R(html);
@@ -1469,7 +1469,7 @@ function startGrandTour() {
         '<div class="sbar"><span class="lbl">Udholdenhed:</span><div class="bg"><div class="fill" style="width:'+G.spiller.ud+'%;background:#f80"></div></div><span>'+G.spiller.ud+'</span></div>' +
         '<div class="sbar"><span class="lbl">Restitution:</span><div class="bg"><div class="fill" style="width:'+G.spiller.re+'%;background:#a4f"></div></div><span>'+G.spiller.re+'</span></div>' +
     '</div>' +
-    '<div class="ctrls"><button class="btn btn-big btn-y" onclick="startEtape()">START ETAPE 1</button></div>';
+    '<div class="ctrls"><button class="btn btn-big btn-y" onclick="startEtape()" style="white-space:nowrap">START ETAPE 1</button></div>';
     
     R(html);
 }
