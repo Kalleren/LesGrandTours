@@ -1,4 +1,4 @@
-var CACHE_NAME = 'grandtours-v1';
+var CACHE_NAME = 'grandtours-v2';
 var urlsToCache = [
     './',
     './index.html',
