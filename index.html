@@ -1884,7 +1884,7 @@ function erstatGTHtml(html) {
     html = html.replace(/background:#110/g, 'background:' + gt.bg);
     html = html.replace(/border:1px solid #aa0/g, 'border:1px solid ' + gt.secondary);
     html = html.replace(/border:2px solid #aa0/g, 'border:2px solid ' + gt.secondary);
-    
+
     return html;
 }
 
@@ -2845,7 +2845,8 @@ function visRes(res, erTT, udeRyttere, vinderTid, tidsGraense) {
 function samlet() {
     gemSpil(true);
     var aktive = G.ryttere.filter(function(r) { return !r.ude; });
-    var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
+    var gt = getGT()
+	var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var spS = aktive.slice().sort(function(a,b) { return (G.sprPts[b.navn]||0) - (G.sprPts[a.navn]||0); });
     var bjS = aktive.slice().sort(function(a,b) { return (G.bjgPts[b.navn]||0) - (G.bjgPts[a.navn]||0); });
     
@@ -2911,9 +2912,9 @@ var html = '<h2>STILLING - Etape ' + (G.enr + 1) + '</h2>' +
         var j = "";
         var visTal = true;
         if (pos === 1) {
-            if (G.stilTab === "gc") { j = "🟡 "; visTal = false; }
-            else if (G.stilTab === "sp") { j = "🟢 "; visTal = false; }
-            else if (G.stilTab === "bj") { j = "🔴 "; visTal = false; }
+            if (G.stilTab === "gc") { j = gt.gcEmoji + " "; visTal = false; }
+            else if (G.stilTab === "sp") { j = gt.spEmoji + " "; visTal = false; }
+            else if (G.stilTab === "bj") { j = gt.bjEmoji + " "; visTal = false; }
         }
         var numTxt = visTal ? pos + '. ' : '';
         html += '<div class="' + cls + '"><span>' + j + numTxt + r.navn.substring(0,32) + ' <span style="color:#666">' + r.holdAbbr + '</span></span><span>' + val + '</span></div>';
@@ -3029,9 +3030,9 @@ function slut() {
             else if (pos === 2) { prefix = "🥈 "; visTal = false; }
             else if (pos === 3) { prefix = "🥉 "; visTal = false; }
         } else if (G.stilTab === "sp") {
-            if (pos === 1) { prefix = "🟢 "; visTal = false; }
+            if (pos === 1) { prefix = gt.spEmoji + " "; visTal = false; }
         } else if (G.stilTab === "bj") {
-            if (pos === 1) { prefix = "🔴 "; visTal = false; }
+            if (pos === 1) { prefix = gt.bjEmoji + " "; visTal = false; }
         }
         var val;
         if (G.stilTab === "gc") val = pos === 1 ? ft(r.stid) : '+' + ft(r.stid - fTid);
