@@ -328,7 +328,7 @@ var GT_CONFIG = {
         id: "tdf",
         navn: "Tour de France",
         kort: "TdF",
-        aar: function() { return 2024 + G.saeson; },
+        aar: function() { return 2025 + G.saeson; },
         emoji: "🇫🇷",
         maaned: "Juli",
         styrke: "★★★",
@@ -390,7 +390,7 @@ var GT_CONFIG = {
         id: "giro",
         navn: "Giro d'Italia",
         kort: "Giro",
-        aar: function() { return 2024 + G.saeson; },
+        aar: function() { return 2025 + G.saeson; },
         emoji: "🇮🇹",
         maaned: "Maj",
         styrke: "★★☆",
@@ -444,7 +444,7 @@ var GT_CONFIG = {
         id: "vuelta",
         navn: "Vuelta a España",
         kort: "Vuelta",
-        aar: function() { return 2024 + G.saeson; },
+        aar: function() { return 2025 + G.saeson; },
         emoji: "🇪🇸",
         maaned: "Aug-Sep",
         styrke: "★☆☆",
@@ -510,8 +510,7 @@ var GT_TRAETHED = {
 // Alle ryttere kan køre max 2 GT per sæson
 
 var TEAMS = {
-    "UAE Team Emirates": { abbr: "UAE", clr: "#fe3c3c", r: [
-        // Tour-fokus
+    "UAE Team Emirates-XRG": { abbr: "UAE", clr: "#fe3c3c", r: [
         { n: "Tadej Pogačar", gc: 98, bj: 98, sp: 72, tt: 95, ud: 96, re: 86, fl: 86, pri: "tdf", pref: ["tdf"] },
         { n: "Adam Yates", gc: 84, bj: 86, sp: 55, tt: 80, ud: 88, re: 82, fl: 76, pri: "giro", pref: ["giro","tdf"] },
         { n: "João Almeida", gc: 85, bj: 84, sp: 58, tt: 86, ud: 86, re: 84, fl: 80, pri: "tdf", pref: ["tdf","vuelta"] },
@@ -520,11 +519,9 @@ var TEAMS = {
         { n: "Nils Politt", gc: 56, bj: 50, sp: 68, tt: 76, ud: 86, re: 82, fl: 88, pri: "tdf", pref: ["tdf"] },
         { n: "Pavel Sivakov", gc: 76, bj: 82, sp: 46, tt: 78, ud: 84, re: 76, fl: 70, pri: "giro", pref: ["giro","tdf"] },
         { n: "Tim Wellens", gc: 64, bj: 70, sp: 66, tt: 68, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta","tdf"] },
-        // Giro/Vuelta-fokus
-        { n: "Juan Ayuso", gc: 88, bj: 86, sp: 62, tt: 88, ud: 84, re: 82, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Isaac Del Toro", gc: 82, bj: 84, sp: 62, tt: 80, ud: 82, re: 80, fl: 76, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Brandon McNulty", gc: 72, bj: 74, sp: 60, tt: 86, ud: 84, re: 80, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Isaac Del Toro", gc: 78, bj: 80, sp: 58, tt: 76, ud: 80, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Rafał Majka", gc: 68, bj: 78, sp: 48, tt: 72, ud: 86, re: 76, fl: 74, pri: "vuelta", pref: ["vuelta","giro"] },
+        { n: "Benoît Cosnefroy", gc: 66, bj: 76, sp: 72, tt: 70, ud: 82, re: 78, fl: 76, pri: "tdf", pref: ["tdf"] },
         { n: "Filippo Baroncini", gc: 60, bj: 64, sp: 76, tt: 74, ud: 82, re: 80, fl: 82, pri: "giro", pref: ["giro"] }
     ]},
     "Visma-Lease a Bike": { abbr: "VIS", clr: "#ffcc00", r: [
@@ -534,69 +531,70 @@ var TEAMS = {
         { n: "Christophe Laporte", gc: 60, bj: 56, sp: 85, tt: 78, ud: 84, re: 80, fl: 88, pri: "tdf", pref: ["tdf"] },
         { n: "Sepp Kuss", gc: 78, bj: 90, sp: 40, tt: 70, ud: 88, re: 74, fl: 66, pri: "vuelta", pref: ["vuelta","tdf"] },
         { n: "Wilco Kelderman", gc: 76, bj: 80, sp: 48, tt: 78, ud: 82, re: 72, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Tiesj Benoot", gc: 64, bj: 66, sp: 70, tt: 76, ud: 84, re: 80, fl: 82, pri: "tdf", pref: ["tdf"] },
         { n: "Jan Tratnik", gc: 58, bj: 68, sp: 60, tt: 80, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro","tdf"] },
         { n: "Simon Yates", gc: 84, bj: 88, sp: 50, tt: 78, ud: 84, re: 76, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Olav Kooij", gc: 36, bj: 28, sp: 93, tt: 64, ud: 74, re: 82, fl: 80, pri: "giro", pref: ["giro"] },
-        { n: "Dylan van Baarle", gc: 62, bj: 64, sp: 72, tt: 82, ud: 88, re: 84, fl: 88, pri: "giro", pref: ["giro","tdf"] },
         { n: "Steven Kruijswijk", gc: 74, bj: 82, sp: 44, tt: 76, ud: 84, re: 74, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Bruno Armirail", gc: 56, bj: 60, sp: 54, tt: 86, ud: 90, re: 86, fl: 88, pri: "tdf", pref: ["tdf"] },
+        { n: "Timo Kielich", gc: 56, bj: 62, sp: 68, tt: 70, ud: 82, re: 80, fl: 78, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Matthew Brennan", gc: 70, bj: 74, sp: 68, tt: 74, ud: 80, re: 78, fl: 76, pri: "giro", pref: ["giro","tdf"] },
         { n: "Edoardo Affini", gc: 48, bj: 46, sp: 60, tt: 88, ud: 88, re: 84, fl: 90, pri: "giro", pref: ["giro"] }
     ]},
     "INEOS Grenadiers": { abbr: "INE", clr: "#d40027", r: [
         { n: "Carlos Rodríguez", gc: 86, bj: 88, sp: 50, tt: 82, ud: 88, re: 84, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Egan Bernal", gc: 82, bj: 88, sp: 48, tt: 80, ud: 78, re: 68, fl: 70, pri: "giro", pref: ["giro"] },
-        { n: "Tom Pidcock", gc: 78, bj: 82, sp: 74, tt: 78, ud: 82, re: 80, fl: 80, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Geraint Thomas", gc: 80, bj: 82, sp: 50, tt: 85, ud: 82, re: 70, fl: 76, pri: "tdf", pref: ["tdf"] },
-        { n: "Laurens De Plus", gc: 62, bj: 68, sp: 54, tt: 78, ud: 88, re: 82, fl: 80, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Ben Turner", gc: 56, bj: 58, sp: 56, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Oscar Onley", gc: 70, bj: 76, sp: 46, tt: 72, ud: 78, re: 80, fl: 68, pri: "vuelta", pref: ["vuelta"] },
-        { n: "Jonathan Castroviejo", gc: 54, bj: 60, sp: 50, tt: 88, ud: 90, re: 86, fl: 86, pri: "giro", pref: ["giro","tdf"] },
         { n: "Thymen Arensman", gc: 78, bj: 84, sp: 44, tt: 82, ud: 86, re: 82, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Josh Tarling", gc: 50, bj: 48, sp: 62, tt: 92, ud: 86, re: 84, fl: 90, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Laurens De Plus", gc: 62, bj: 68, sp: 54, tt: 78, ud: 88, re: 82, fl: 80, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Ben Turner", gc: 56, bj: 58, sp: 56, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
         { n: "Lucas Hamilton", gc: 72, bj: 78, sp: 48, tt: 76, ud: 84, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Kim Heiduk", gc: 58, bj: 66, sp: 52, tt: 74, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
+        { n: "Kim Heiduk", gc: 58, bj: 66, sp: 52, tt: 74, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] },
+        { n: "Magnus Sheffield", gc: 64, bj: 70, sp: 72, tt: 78, ud: 84, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Dorian Godon", gc: 62, bj: 68, sp: 70, tt: 72, ud: 84, re: 80, fl: 78, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Kévin Vauquelin", gc: 72, bj: 80, sp: 58, tt: 80, ud: 84, re: 80, fl: 76, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Jack Haig", gc: 78, bj: 84, sp: 46, tt: 76, ud: 84, re: 78, fl: 70, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Sam Welsford", gc: 36, bj: 28, sp: 92, tt: 68, ud: 76, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] }
     ]},
-    "Soudal Quick-Step": { abbr: "SOQ", clr: "#3366ff", r: [
-        { n: "Remco Evenepoel", gc: 92, bj: 85, sp: 68, tt: 97, ud: 88, re: 84, fl: 90, pri: "tdf", pref: ["tdf","giro","vuelta"] },
-        { n: "Mikel Landa", gc: 82, bj: 88, sp: 44, tt: 76, ud: 84, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Julian Alaphilippe", gc: 70, bj: 80, sp: 78, tt: 70, ud: 76, re: 72, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Tim Merlier", gc: 40, bj: 30, sp: 94, tt: 60, ud: 74, re: 80, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Kasper Asgreen", gc: 58, bj: 54, sp: 74, tt: 86, ud: 88, re: 84, fl: 88, pri: "tdf", pref: ["tdf"] },
-        { n: "Jan Hirt", gc: 70, bj: 86, sp: 38, tt: 72, ud: 86, re: 78, fl: 66, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Yves Lampaert", gc: 50, bj: 46, sp: 68, tt: 88, ud: 90, re: 86, fl: 90, pri: "tdf", pref: ["tdf"] },
-        { n: "Gianni Moscon", gc: 56, bj: 58, sp: 64, tt: 80, ud: 86, re: 82, fl: 84, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Ethan Hayter", gc: 62, bj: 58, sp: 82, tt: 84, ud: 82, re: 80, fl: 84, pri: "giro", pref: ["giro","tdf"] },
-        { n: "James Knox", gc: 72, bj: 78, sp: 48, tt: 76, ud: 84, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Mattia Cattaneo", gc: 64, bj: 70, sp: 52, tt: 82, ud: 86, re: 80, fl: 80, pri: "giro", pref: ["giro"] },
-        { n: "Paul Magnier", gc: 42, bj: 36, sp: 88, tt: 68, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] }
-    ]},
-    "Red Bull BORA-hansgrohe": { abbr: "RBH", clr: "#00d84f", r: [
+    "Red Bull-BORA-hansgrohe": { abbr: "RBH", clr: "#00d84f", r: [
         { n: "Primož Roglič", gc: 94, bj: 90, sp: 60, tt: 90, ud: 86, re: 76, fl: 80, pri: "giro", pref: ["vuelta","giro","tdf"] },
+        { n: "Remco Evenepoel", gc: 92, bj: 85, sp: 68, tt: 97, ud: 88, re: 84, fl: 90, pri: "tdf", pref: ["tdf","giro","vuelta"] },
         { n: "Aleksandr Vlasov", gc: 84, bj: 86, sp: 48, tt: 80, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Jai Hindley", gc: 82, bj: 88, sp: 44, tt: 76, ud: 88, re: 82, fl: 70, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Sam Bennett", gc: 34, bj: 28, sp: 92, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Florian Lipowitz", gc: 90, bj: 88, sp: 54, tt: 84, ud: 86, re: 82, fl: 78, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Bob Jungels", gc: 66, bj: 70, sp: 58, tt: 82, ud: 90, re: 84, fl: 84, pri: "tdf", pref: ["tdf"] },
         { n: "Patrick Konrad", gc: 68, bj: 76, sp: 54, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Marco Haller", gc: 50, bj: 50, sp: 74, tt: 72, ud: 86, re: 84, fl: 82, pri: "tdf", pref: ["tdf"] },
         { n: "Sergio Higuita", gc: 76, bj: 82, sp: 50, tt: 76, ud: 84, re: 78, fl: 72, pri: "vuelta", pref: ["vuelta","tdf"] },
         { n: "Dani Martínez", gc: 82, bj: 84, sp: 50, tt: 82, ud: 86, re: 80, fl: 76, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Giulio Pellizzari", gc: 74, bj: 82, sp: 44, tt: 72, ud: 80, re: 78, fl: 68, pri: "giro", pref: ["giro"] },
+        { n: "Mattia Cattaneo", gc: 64, bj: 70, sp: 52, tt: 82, ud: 86, re: 80, fl: 80, pri: "giro", pref: ["giro"] },
         { n: "Giovanni Aleotti", gc: 70, bj: 78, sp: 46, tt: 74, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Nico Denz", gc: 58, bj: 62, sp: 64, tt: 78, ud: 88, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] }
     ]},
-    "Alpecin-Deceuninck": { abbr: "ADC", clr: "#3c64af", r: [
+    "Soudal Quick-Step": { abbr: "SOQ", clr: "#3366ff", r: [
+        { n: "Mikel Landa", gc: 82, bj: 88, sp: 44, tt: 76, ud: 84, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Tim Merlier", gc: 40, bj: 30, sp: 94, tt: 60, ud: 74, re: 80, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Kasper Asgreen", gc: 58, bj: 54, sp: 74, tt: 86, ud: 88, re: 84, fl: 88, pri: "tdf", pref: ["tdf"] },
+        { n: "Jan Hirt", gc: 70, bj: 86, sp: 38, tt: 72, ud: 86, re: 78, fl: 66, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Yves Lampaert", gc: 50, bj: 46, sp: 68, tt: 88, ud: 90, re: 86, fl: 90, pri: "tdf", pref: ["tdf"] },
+        { n: "Jasper Stuyven", gc: 58, bj: 54, sp: 78, tt: 76, ud: 86, re: 82, fl: 86, pri: "tdf", pref: ["tdf"] },
+        { n: "Dylan van Baarle", gc: 62, bj: 64, sp: 72, tt: 82, ud: 88, re: 84, fl: 88, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Filippo Zana", gc: 72, bj: 80, sp: 50, tt: 76, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Alberto Dainese", gc: 44, bj: 38, sp: 88, tt: 68, ud: 78, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Ethan Hayter", gc: 62, bj: 58, sp: 82, tt: 84, ud: 82, re: 80, fl: 84, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Gianni Moscon", gc: 56, bj: 58, sp: 64, tt: 80, ud: 86, re: 82, fl: 84, pri: "giro", pref: ["giro","tdf"] }
+    ]},
+    "Alpecin-Premier Tech": { abbr: "APT", clr: "#3c64af", r: [
         { n: "Mathieu van der Poel", gc: 66, bj: 70, sp: 94, tt: 82, ud: 84, re: 80, fl: 92, pri: "tdf", pref: ["tdf"] },
         { n: "Jasper Philipsen", gc: 36, bj: 26, sp: 97, tt: 64, ud: 72, re: 82, fl: 78, pri: "tdf", pref: ["tdf"] },
         { n: "Kaden Groves", gc: 38, bj: 30, sp: 90, tt: 60, ud: 74, re: 80, fl: 76, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Silvan Dillier", gc: 50, bj: 53, sp: 68, tt: 78, ud: 90, re: 86, fl: 84, pri: "tdf", pref: ["tdf"] },
         { n: "Søren Kragh Andersen", gc: 58, bj: 56, sp: 74, tt: 82, ud: 86, re: 84, fl: 86, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Quinten Hermans", gc: 64, bj: 70, sp: 66, tt: 68, ud: 80, re: 76, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Axel Zingle", gc: 54, bj: 58, sp: 70, tt: 68, ud: 78, re: 80, fl: 76, pri: "tdf", pref: ["tdf","giro"] },
         { n: "Jonas Rickaert", gc: 48, bj: 50, sp: 60, tt: 76, ud: 88, re: 86, fl: 82, pri: "tdf", pref: ["tdf"] },
-        { n: "Jimmy Janssens", gc: 52, bj: 54, sp: 58, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro"] },
-        { n: "Timo Kielich", gc: 56, bj: 62, sp: 68, tt: 70, ud: 82, re: 80, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Edward Planckaert", gc: 44, bj: 42, sp: 76, tt: 70, ud: 84, re: 82, fl: 84, pri: "giro", pref: ["giro"] },
-        { n: "Jensen Plowright", gc: 60, bj: 66, sp: 54, tt: 72, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta","giro"] }
+        { n: "Hugo Houle", gc: 66, bj: 74, sp: 58, tt: 76, ud: 88, re: 82, fl: 78, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Florian Sénéchal", gc: 48, bj: 46, sp: 76, tt: 74, ud: 86, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Gerben Thijssen", gc: 38, bj: 32, sp: 88, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Jensen Plowright", gc: 60, bj: 66, sp: 54, tt: 72, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta","giro"] },
+        { n: "Edward Planckaert", gc: 44, bj: 42, sp: 76, tt: 70, ud: 84, re: 82, fl: 84, pri: "giro", pref: ["giro"] }
     ]},
     "EF Education-EasyPost": { abbr: "EFE", clr: "#ff69b4", r: [
         { n: "Richard Carapaz", gc: 86, bj: 92, sp: 46, tt: 80, ud: 90, re: 84, fl: 70, pri: "giro", pref: ["giro","tdf"] },
@@ -609,204 +607,233 @@ var TEAMS = {
         { n: "Marijn van den Berg", gc: 44, bj: 40, sp: 82, tt: 66, ud: 78, re: 82, fl: 80, pri: "vuelta", pref: ["vuelta"] },
         { n: "Hugh Carthy", gc: 76, bj: 86, sp: 40, tt: 72, ud: 82, re: 74, fl: 66, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Georg Steinhauser", gc: 72, bj: 80, sp: 48, tt: 76, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro"] },
-        { n: "Michael Valgren", gc: 62, bj: 66, sp: 74, tt: 74, ud: 82, re: 78, fl: 80, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Mikkel Honoré", gc: 68, bj: 76, sp: 56, tt: 78, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro","vuelta"] }
+        { n: "Mikkel Honoré", gc: 68, bj: 76, sp: 56, tt: 78, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Luke Lamperti", gc: 48, bj: 44, sp: 82, tt: 70, ud: 80, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] }
     ]},
     "Lidl-Trek": { abbr: "TRK", clr: "#ed1c24", r: [
         { n: "Mads Pedersen", gc: 60, bj: 56, sp: 90, tt: 82, ud: 88, re: 86, fl: 92, pri: "tdf", pref: ["tdf","giro"] },
         { n: "Giulio Ciccone", gc: 72, bj: 88, sp: 50, tt: 68, ud: 78, re: 74, fl: 66, pri: "giro", pref: ["giro","tdf"] },
         { n: "Tao Geoghegan Hart", gc: 78, bj: 82, sp: 48, tt: 80, ud: 82, re: 78, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
-        { n: "Juan Pedro López", gc: 74, bj: 82, sp: 46, tt: 76, ud: 84, re: 80, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Jasper Stuyven", gc: 58, bj: 54, sp: 78, tt: 76, ud: 86, re: 82, fl: 86, pri: "tdf", pref: ["tdf"] },
+        { n: "Juan Ayuso", gc: 88, bj: 86, sp: 62, tt: 88, ud: 84, re: 82, fl: 78, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Julien Bernard", gc: 54, bj: 60, sp: 58, tt: 72, ud: 88, re: 84, fl: 78, pri: "tdf", pref: ["tdf"] },
         { n: "Tony Gallopin", gc: 56, bj: 64, sp: 66, tt: 68, ud: 82, re: 78, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Daan Hoole", gc: 50, bj: 48, sp: 56, tt: 80, ud: 88, re: 86, fl: 84, pri: "giro", pref: ["giro","tdf"] },
         { n: "Mathias Vacek", gc: 64, bj: 70, sp: 72, tt: 76, ud: 82, re: 80, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Carlos Verona", gc: 66, bj: 78, sp: 48, tt: 74, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro"] },
-        { n: "Patrick Konrad", gc: 68, bj: 76, sp: 54, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Jacopo Mosca", gc: 52, bj: 56, sp: 60, tt: 74, ud: 88, re: 84, fl: 80, pri: "giro", pref: ["giro"] }
+        { n: "Mathias Norsgaard", gc: 48, bj: 46, sp: 64, tt: 86, ud: 86, re: 84, fl: 88, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Max Walscheid", gc: 40, bj: 32, sp: 86, tt: 74, ud: 78, re: 80, fl: 84, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Jacopo Mosca", gc: 52, bj: 56, sp: 60, tt: 74, ud: 88, re: 84, fl: 80, pri: "giro", pref: ["giro"] },
+        { n: "Juan Pedro López", gc: 74, bj: 82, sp: 46, tt: 76, ud: 84, re: 80, fl: 70, pri: "giro", pref: ["giro","vuelta"] }
     ]},
     "Bahrain Victorious": { abbr: "TBV", clr: "#da291c", r: [
-        { n: "Jack Haig", gc: 78, bj: 84, sp: 46, tt: 76, ud: 84, re: 78, fl: 70, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Santiago Buitrago", gc: 76, bj: 86, sp: 44, tt: 72, ud: 82, re: 76, fl: 68, pri: "vuelta", pref: ["vuelta","giro"] },
-        { n: "Pello Bilbao", gc: 80, bj: 84, sp: 50, tt: 78, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Jonathan Milan", gc: 38, bj: 28, sp: 95, tt: 72, ud: 76, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
         { n: "Phil Bauhaus", gc: 36, bj: 26, sp: 91, tt: 62, ud: 74, re: 82, fl: 80, pri: "vuelta", pref: ["vuelta","tdf"] },
         { n: "Matej Mohorič", gc: 62, bj: 68, sp: 76, tt: 74, ud: 86, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Wout Poels", gc: 70, bj: 82, sp: 48, tt: 74, ud: 84, re: 74, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
         { n: "Dylan Teuns", gc: 68, bj: 78, sp: 66, tt: 70, ud: 82, re: 78, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Antonio Tiberi", gc: 80, bj: 86, sp: 46, tt: 80, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro"] },
+        { n: "Antonio Tiberi", gc: 82, bj: 86, sp: 46, tt: 80, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro"] },
         { n: "Damiano Caruso", gc: 76, bj: 82, sp: 44, tt: 78, ud: 86, re: 78, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Edoardo Zambanini", gc: 64, bj: 74, sp: 48, tt: 72, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro"] },
+        { n: "Attila Valter", gc: 74, bj: 80, sp: 48, tt: 76, ud: 82, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Alec Segaert", gc: 50, bj: 48, sp: 64, tt: 88, ud: 84, re: 82, fl: 86, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Jakob Omrzel", gc: 76, bj: 82, sp: 52, tt: 78, ud: 80, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Andrea Pasqualon", gc: 42, bj: 38, sp: 80, tt: 66, ud: 80, re: 82, fl: 82, pri: "giro", pref: ["giro","vuelta"] }
-    ]},
-    "Movistar Team": { abbr: "MOV", clr: "#005a9c", r: [
-        { n: "Enric Mas", gc: 84, bj: 86, sp: 48, tt: 78, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Nairo Quintana", gc: 80, bj: 92, sp: 42, tt: 70, ud: 84, re: 72, fl: 66, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Alex Aranburu", gc: 58, bj: 64, sp: 82, tt: 70, ud: 82, re: 80, fl: 82, pri: "tdf", pref: ["tdf","vuelta"] },
+    ]}
+"Movistar Team": { abbr: "MOV", clr: "#005a9c", r: [
+        { n: "Enric Mas", gc: 84, bj: 86, sp: 48, tt: 78, ud: 86, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Cian Uijtdebroeks", gc: 80, bj: 84, sp: 46, tt: 82, ud: 84, re: 80, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Nairo Quintana", gc: 78, bj: 90, sp: 42, tt: 70, ud: 82, re: 70, fl: 66, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Einer Rubio", gc: 74, bj: 84, sp: 44, tt: 72, ud: 82, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Iván Romeo", gc: 76, bj: 80, sp: 52, tt: 84, ud: 82, re: 80, fl: 76, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Juan Pedro López", gc: 74, bj: 82, sp: 46, tt: 76, ud: 84, re: 80, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Alex Aranburu", gc: 58, bj: 64, sp: 82, tt: 70, ud: 82, re: 80, fl: 82, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Oier Lazkano", gc: 66, bj: 74, sp: 62, tt: 72, ud: 84, re: 80, fl: 76, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Nelson Oliveira", gc: 56, bj: 58, sp: 58, tt: 84, ud: 88, re: 84, fl: 86, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Iván García Cortina", gc: 50, bj: 52, sp: 78, tt: 74, ud: 84, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
-        { n: "Mathias Norsgaard", gc: 48, bj: 46, sp: 64, tt: 86, ud: 86, re: 84, fl: 88, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Roger Adrià", gc: 68, bj: 76, sp: 56, tt: 74, ud: 84, re: 80, fl: 74, pri: "vuelta", pref: ["vuelta","giro"] },
         { n: "Davide Formolo", gc: 68, bj: 78, sp: 52, tt: 72, ud: 84, re: 78, fl: 74, pri: "giro", pref: ["giro"] },
-        { n: "Jefferson Cepeda", gc: 72, bj: 82, sp: 44, tt: 70, ud: 82, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Jon Barrenetxea", gc: 62, bj: 72, sp: 58, tt: 68, ud: 80, re: 78, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Lorenzo Milesi", gc: 56, bj: 64, sp: 56, tt: 74, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
     ]},
-    "Decathlon-AG2R La Mondiale": { abbr: "DAT", clr: "#5a9fd4", r: [
-        { n: "Ben O'Connor", gc: 82, bj: 86, sp: 46, tt: 78, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Felix Gall", gc: 78, bj: 86, sp: 44, tt: 74, ud: 84, re: 78, fl: 70, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Benoît Cosnefroy", gc: 66, bj: 76, sp: 72, tt: 70, ud: 82, re: 78, fl: 76, pri: "tdf", pref: ["tdf"] },
-        { n: "Lilian Calmejane", gc: 62, bj: 74, sp: 64, tt: 68, ud: 84, re: 78, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Greg Van Avermaet", gc: 58, bj: 62, sp: 80, tt: 78, ud: 84, re: 76, fl: 86, pri: "tdf", pref: ["tdf"] },
+    "Decathlon CMA CGM": { abbr: "DCT", clr: "#5a9fd4", r: [
+        { n: "Felix Gall", gc: 78, bj: 86, sp: 44, tt: 74, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Paul Seixas", gc: 84, bj: 88, sp: 52, tt: 84, ud: 82, re: 80, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Olav Kooij", gc: 36, bj: 28, sp: 93, tt: 64, ud: 74, re: 82, fl: 80, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Tiesj Benoot", gc: 64, bj: 66, sp: 70, tt: 76, ud: 84, re: 80, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Tobias Lund Andresen", gc: 50, bj: 48, sp: 86, tt: 78, ud: 80, re: 82, fl: 84, pri: "giro", pref: ["giro","tdf"] },
         { n: "Aurélien Paret-Peintre", gc: 70, bj: 80, sp: 48, tt: 72, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","tdf"] },
         { n: "Nans Peters", gc: 64, bj: 76, sp: 58, tt: 70, ud: 86, re: 80, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Paul Lapeira", gc: 56, bj: 64, sp: 74, tt: 68, ud: 82, re: 80, fl: 78, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Sam Bennett", gc: 34, bj: 28, sp: 90, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro"] },
-        { n: "Dorian Godon", gc: 62, bj: 68, sp: 70, tt: 72, ud: 84, re: 80, fl: 78, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Andrea Vendrame", gc: 52, bj: 56, sp: 82, tt: 68, ud: 80, re: 82, fl: 80, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Geoffrey Bouchard", gc: 66, bj: 82, sp: 42, tt: 68, ud: 86, re: 78, fl: 68, pri: "giro", pref: ["giro"] }
+        { n: "Daan Hoole", gc: 50, bj: 48, sp: 56, tt: 80, ud: 88, re: 86, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Cees Bol", gc: 42, bj: 34, sp: 88, tt: 68, ud: 78, re: 82, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Mathew Riccitello", gc: 74, bj: 82, sp: 46, tt: 76, ud: 82, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Geoffrey Bouchard", gc: 66, bj: 82, sp: 42, tt: 68, ud: 86, re: 78, fl: 68, pri: "giro", pref: ["giro"] },
+        { n: "Andrea Vendrame", gc: 52, bj: 56, sp: 82, tt: 68, ud: 80, re: 82, fl: 80, pri: "giro", pref: ["giro","vuelta"] }
     ]},
-    "Groupama-FDJ": { abbr: "GFC", clr: "#00539f", r: [
+    "Groupama-FDJ United": { abbr: "GFC", clr: "#00539f", r: [
+        { n: "Romain Grégoire", gc: 74, bj: 80, sp: 72, tt: 74, ud: 82, re: 80, fl: 78, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "David Gaudu", gc: 82, bj: 88, sp: 52, tt: 76, ud: 86, re: 78, fl: 72, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Thibaut Pinot", gc: 76, bj: 90, sp: 46, tt: 72, ud: 80, re: 68, fl: 66, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Arnaud Démare", gc: 42, bj: 32, sp: 93, tt: 66, ud: 78, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Stefan Küng", gc: 52, bj: 50, sp: 68, tt: 94, ud: 90, re: 86, fl: 92, pri: "tdf", pref: ["tdf"] },
+        { n: "Guillaume Martin", gc: 80, bj: 86, sp: 48, tt: 74, ud: 86, re: 78, fl: 70, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Arnaud Démare", gc: 42, bj: 32, sp: 91, tt: 66, ud: 78, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
         { n: "Valentin Madouas", gc: 66, bj: 74, sp: 68, tt: 72, ud: 84, re: 80, fl: 78, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Bruno Armirail", gc: 56, bj: 60, sp: 54, tt: 86, ud: 90, re: 86, fl: 88, pri: "tdf", pref: ["tdf"] },
         { n: "Rudy Molard", gc: 68, bj: 76, sp: 56, tt: 72, ud: 84, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta","tdf"] },
         { n: "Quentin Pacher", gc: 64, bj: 78, sp: 50, tt: 70, ud: 86, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Enzo Paleni", gc: 58, bj: 68, sp: 54, tt: 70, ud: 82, re: 80, fl: 74, pri: "giro", pref: ["giro"] },
+        { n: "Maxime Decomble", gc: 70, bj: 78, sp: 54, tt: 74, ud: 80, re: 78, fl: 72, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Lorenzo Germani", gc: 52, bj: 58, sp: 60, tt: 72, ud: 84, re: 82, fl: 78, pri: "giro", pref: ["giro"] },
         { n: "Clément Davy", gc: 54, bj: 62, sp: 58, tt: 74, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Kevin Geniets", gc: 50, bj: 52, sp: 64, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro"] },
-        { n: "Lorenzo Germani", gc: 52, bj: 58, sp: 60, tt: 72, ud: 84, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
+        { n: "Kevin Geniets", gc: 50, bj: 52, sp: 64, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro"] }
     ]},
-    "Cofidis": { abbr: "COF", clr: "#e2001a", r: [
-        { n: "Guillaume Martin", gc: 80, bj: 86, sp: 48, tt: 74, ud: 86, re: 78, fl: 70, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Bryan Coquard", gc: 40, bj: 32, sp: 92, tt: 62, ud: 76, re: 82, fl: 80, pri: "tdf", pref: ["tdf"] },
-        { n: "Ion Izagirre", gc: 74, bj: 82, sp: 54, tt: 78, ud: 84, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta","giro"] },
-        { n: "Simon Geschke", gc: 64, bj: 80, sp: 50, tt: 68, ud: 86, re: 78, fl: 70, pri: "tdf", pref: ["tdf"] },
-        { n: "Jesus Herrada", gc: 68, bj: 78, sp: 58, tt: 72, ud: 86, re: 80, fl: 76, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Anthony Perez", gc: 58, bj: 70, sp: 64, tt: 66, ud: 88, re: 82, fl: 76, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Benjamin Thomas", gc: 56, bj: 58, sp: 70, tt: 82, ud: 86, re: 84, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Axel Laurance", gc: 62, bj: 72, sp: 60, tt: 68, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta"] },
-        { n: "Sylvain Moniquet", gc: 66, bj: 78, sp: 48, tt: 70, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Jonathan Lastra", gc: 64, bj: 76, sp: 52, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Stefano Oldani", gc: 56, bj: 64, sp: 68, tt: 70, ud: 84, re: 80, fl: 78, pri: "giro", pref: ["giro"] },
-        { n: "Nicolas Debeaumarché", gc: 52, bj: 60, sp: 56, tt: 72, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
-    ]},
-    "Intermarché-Wanty": { abbr: "IWG", clr: "#1d4289", r: [
-        { n: "Biniam Girmay", gc: 48, bj: 52, sp: 92, tt: 66, ud: 80, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
-        { n: "Louis Meintjes", gc: 78, bj: 88, sp: 42, tt: 74, ud: 86, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Rein Taaramäe", gc: 68, bj: 80, sp: 48, tt: 72, ud: 84, re: 80, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
-        { n: "Lorenzo Rota", gc: 64, bj: 74, sp: 66, tt: 70, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Rui Costa", gc: 70, bj: 76, sp: 64, tt: 78, ud: 86, re: 78, fl: 80, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Mike Teunissen", gc: 52, bj: 50, sp: 76, tt: 78, ud: 86, re: 84, fl: 86, pri: "tdf", pref: ["tdf"] },
-        { n: "Kobe Goossens", gc: 66, bj: 78, sp: 52, tt: 70, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Georg Zimmermann", gc: 64, bj: 74, sp: 62, tt: 72, ud: 84, re: 80, fl: 76, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Gerben Thijssen", gc: 38, bj: 32, sp: 88, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro"] },
-        { n: "Taco van der Hoorn", gc: 56, bj: 60, sp: 70, tt: 72, ud: 86, re: 82, fl: 80, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Simone Petilli", gc: 62, bj: 72, sp: 52, tt: 70, ud: 84, re: 78, fl: 74, pri: "giro", pref: ["giro"] },
-        { n: "Dion Smith", gc: 46, bj: 44, sp: 80, tt: 68, ud: 80, re: 82, fl: 82, pri: "giro", pref: ["giro","vuelta"] }
-    ]},
-    "Astana Qazaqstan": { abbr: "AST", clr: "#00b5e2", r: [
-        { n: "Alexey Lutsenko", gc: 76, bj: 80, sp: 70, tt: 78, ud: 86, re: 80, fl: 80, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Mark Cavendish", gc: 38, bj: 28, sp: 94, tt: 62, ud: 72, re: 76, fl: 78, pri: "tdf", pref: ["tdf"] },
-        { n: "Harold Tejada", gc: 72, bj: 84, sp: 46, tt: 72, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Cees Bol", gc: 42, bj: 34, sp: 88, tt: 68, ud: 78, re: 82, fl: 82, pri: "giro", pref: ["giro"] },
-        { n: "Joe Dombrowski", gc: 70, bj: 82, sp: 44, tt: 74, ud: 86, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Davide Martinelli", gc: 48, bj: 46, sp: 72, tt: 70, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Yevgeniy Fedorov", gc: 64, bj: 76, sp: 56, tt: 70, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta"] },
-        { n: "Michele Gazzoli", gc: 50, bj: 52, sp: 68, tt: 76, ud: 88, re: 86, fl: 84, pri: "giro", pref: ["giro"] },
-        { n: "Diego Ulissi", gc: 70, bj: 76, sp: 72, tt: 74, ud: 84, re: 78, fl: 80, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Lorenzo Fortunato", gc: 68, bj: 82, sp: 44, tt: 70, ud: 86, re: 78, fl: 70, pri: "giro", pref: ["giro"] },
-        { n: "Fausto Masnada", gc: 66, bj: 78, sp: 52, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Wout Poels", gc: 70, bj: 82, sp: 48, tt: 74, ud: 84, re: 74, fl: 72, pri: "giro", pref: ["giro","vuelta"] }
-    ]},
-    "DSM-firmenich": { abbr: "DSM", clr: "#00a5db", r: [
-        { n: "Romain Bardet", gc: 82, bj: 90, sp: 46, tt: 76, ud: 84, re: 74, fl: 70, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Thymen Arensman", gc: 78, bj: 84, sp: 44, tt: 82, ud: 86, re: 82, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Nils Eekhoff", gc: 54, bj: 54, sp: 72, tt: 80, ud: 88, re: 86, fl: 86, pri: "tdf", pref: ["tdf"] },
-        { n: "John Degenkolb", gc: 50, bj: 48, sp: 86, tt: 72, ud: 82, re: 78, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Jonas Iversby Hvideberg", gc: 48, bj: 46, sp: 78, tt: 76, ud: 86, re: 84, fl: 84, pri: "giro", pref: ["giro"] },
-        { n: "Florian Stork", gc: 58, bj: 68, sp: 54, tt: 74, ud: 88, re: 84, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Mark Donovan", gc: 66, bj: 78, sp: 50, tt: 72, ud: 86, re: 80, fl: 72, pri: "giro", pref: ["giro"] },
-        { n: "Laurence Pithie", gc: 52, bj: 56, sp: 74, tt: 74, ud: 84, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Max Poole", gc: 70, bj: 78, sp: 48, tt: 76, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro"] },
-        { n: "Casper van Uden", gc: 40, bj: 34, sp: 86, tt: 70, ud: 78, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Marco Brenner", gc: 64, bj: 74, sp: 56, tt: 76, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Rick Pluimers", gc: 60, bj: 70, sp: 52, tt: 74, ud: 86, re: 82, fl: 76, pri: "giro", pref: ["giro"] }
-    ]},
-    "Lotto-Dstny": { abbr: "LTD", clr: "#ff0000", r: [
+    "Lotto Intermarché": { abbr: "LOI", clr: "#ff0000", r: [
+        { n: "Arnaud De Lie", gc: 46, bj: 44, sp: 92, tt: 68, ud: 80, re: 84, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Lennert Van Eetvelt", gc: 74, bj: 82, sp: 46, tt: 78, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Jarno Widar", gc: 78, bj: 84, sp: 44, tt: 78, ud: 82, re: 80, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Maxim Van Gils", gc: 70, bj: 76, sp: 72, tt: 74, ud: 84, re: 80, fl: 80, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Arnaud De Lie", gc: 46, bj: 44, sp: 90, tt: 68, ud: 80, re: 84, fl: 84, pri: "tdf", pref: ["tdf"] },
-        { n: "Caleb Ewan", gc: 36, bj: 26, sp: 95, tt: 60, ud: 72, re: 80, fl: 78, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Louis Meintjes", gc: 78, bj: 88, sp: 42, tt: 74, ud: 86, re: 76, fl: 68, pri: "giro", pref: ["giro","vuelta"] },
         { n: "Victor Campenaerts", gc: 52, bj: 50, sp: 62, tt: 92, ud: 90, re: 86, fl: 90, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Sylvain Moniquet", gc: 68, bj: 80, sp: 48, tt: 70, ud: 86, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Philippe Gilbert", gc: 58, bj: 66, sp: 76, tt: 74, ud: 82, re: 74, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Caleb Ewan", gc: 36, bj: 26, sp: 93, tt: 60, ud: 72, re: 80, fl: 78, pri: "tdf", pref: ["tdf","giro"] },
         { n: "Florian Vermeersch", gc: 56, bj: 62, sp: 70, tt: 80, ud: 88, re: 84, fl: 86, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Cedric Beullens", gc: 50, bj: 54, sp: 66, tt: 76, ud: 88, re: 86, fl: 84, pri: "giro", pref: ["giro"] },
-        { n: "Lennert Van Eetvelt", gc: 72, bj: 82, sp: 46, tt: 76, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Lorenzo Rota", gc: 64, bj: 74, sp: 66, tt: 70, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Georg Zimmermann", gc: 64, bj: 74, sp: 62, tt: 72, ud: 84, re: 80, fl: 76, pri: "vuelta", pref: ["vuelta","tdf"] },
+        { n: "Rein Taaramäe", gc: 68, bj: 80, sp: 48, tt: 72, ud: 84, re: 80, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
         { n: "Andreas Kron", gc: 66, bj: 76, sp: 64, tt: 72, ud: 84, re: 80, fl: 76, pri: "vuelta", pref: ["vuelta","giro"] },
-        { n: "Harm Vanhoucke", gc: 68, bj: 80, sp: 44, tt: 74, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro"] },
-        { n: "Jarrad Drizners", gc: 52, bj: 56, sp: 72, tt: 72, ud: 82, re: 82, fl: 80, pri: "giro", pref: ["giro","vuelta"] }
+        { n: "Harm Vanhoucke", gc: 68, bj: 80, sp: 44, tt: 74, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro"] }
     ]},
-    "Israel-Premier Tech": { abbr: "IPT", clr: "#0033a1", r: [
-        { n: "Michael Woods", gc: 76, bj: 86, sp: 52, tt: 74, ud: 86, re: 78, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Jakob Fuglsang", gc: 78, bj: 84, sp: 54, tt: 80, ud: 84, re: 72, fl: 76, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Pascal Ackermann", gc: 38, bj: 30, sp: 91, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Hugo Houle", gc: 66, bj: 74, sp: 58, tt: 76, ud: 88, re: 82, fl: 78, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Daryl Impey", gc: 58, bj: 62, sp: 72, tt: 78, ud: 86, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
-        { n: "Krists Neilands", gc: 64, bj: 76, sp: 56, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Stevie Williams", gc: 68, bj: 78, sp: 50, tt: 74, ud: 84, re: 78, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Corbin Strong", gc: 52, bj: 54, sp: 80, tt: 72, ud: 82, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Derek Gee", gc: 78, bj: 82, sp: 54, tt: 82, ud: 86, re: 80, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Marco Frigo", gc: 62, bj: 72, sp: 58, tt: 70, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro"] },
-        { n: "Simon Clarke", gc: 60, bj: 68, sp: 68, tt: 74, ud: 86, re: 78, fl: 80, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Nick Schultz", gc: 66, bj: 78, sp: 48, tt: 72, ud: 86, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] }
-    ]},
-    "Arkéa-B&B Hotels": { abbr: "ARK", clr: "#ff5a00", r: [
-        { n: "Nacer Bouhanni", gc: 36, bj: 28, sp: 90, tt: 62, ud: 74, re: 80, fl: 78, pri: "tdf", pref: ["tdf"] },
-        { n: "Warren Barguil", gc: 74, bj: 86, sp: 52, tt: 72, ud: 84, re: 76, fl: 70, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Kevin Vauquelin", gc: 70, bj: 80, sp: 56, tt: 78, ud: 84, re: 80, fl: 76, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Amaury Capiot", gc: 48, bj: 46, sp: 84, tt: 70, ud: 82, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Clément Russo", gc: 58, bj: 68, sp: 60, tt: 74, ud: 88, re: 84, fl: 80, pri: "tdf", pref: ["tdf"] },
-        { n: "Elie Gesbert", gc: 66, bj: 78, sp: 52, tt: 72, ud: 86, re: 80, fl: 74, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Matis Louvel", gc: 54, bj: 62, sp: 68, tt: 70, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Thibault Guernalec", gc: 60, bj: 72, sp: 54, tt: 70, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["giro"] },
-        { n: "Luca Mozzato", gc: 44, bj: 40, sp: 82, tt: 68, ud: 80, re: 82, fl: 82, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Michel Ries", gc: 66, bj: 76, sp: 50, tt: 74, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro"] },
-        { n: "Alessandro Verre", gc: 62, bj: 72, sp: 56, tt: 70, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Simon Guglielmi", gc: 56, bj: 66, sp: 58, tt: 68, ud: 84, re: 82, fl: 76, pri: "giro", pref: ["giro"] }
-    ]},
-    "TotalEnergies": { abbr: "TEN", clr: "#00a651", r: [
-        { n: "Peter Sagan", gc: 56, bj: 60, sp: 88, tt: 76, ud: 82, re: 76, fl: 88, pri: "tdf", pref: ["tdf"] },
-        { n: "Niki Terpstra", gc: 50, bj: 48, sp: 74, tt: 82, ud: 86, re: 78, fl: 88, pri: "tdf", pref: ["tdf"] },
-        { n: "Anthony Turgis", gc: 60, bj: 66, sp: 78, tt: 74, ud: 86, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Alexis Vuillermoz", gc: 68, bj: 80, sp: 54, tt: 70, ud: 84, re: 78, fl: 72, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Pierre Latour", gc: 72, bj: 82, sp: 48, tt: 80, ud: 86, re: 78, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
-        { n: "Mathieu Burgaudeau", gc: 62, bj: 70, sp: 66, tt: 72, ud: 86, re: 82, fl: 78, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Fabien Doubey", gc: 56, bj: 66, sp: 62, tt: 70, ud: 88, re: 84, fl: 78, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Daniel Oss", gc: 48, bj: 46, sp: 66, tt: 76, ud: 90, re: 88, fl: 88, pri: "tdf", pref: ["tdf"] },
-        { n: "Valentin Ferron", gc: 64, bj: 76, sp: 54, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Cristian Rodriguez", gc: 70, bj: 80, sp: 46, tt: 74, ud: 84, re: 78, fl: 72, pri: "vuelta", pref: ["vuelta"] },
-        { n: "Sandy Dujardin", gc: 54, bj: 62, sp: 60, tt: 72, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] },
-        { n: "Jérémy Cabot", gc: 58, bj: 68, sp: 56, tt: 70, ud: 88, re: 84, fl: 78, pri: "giro", pref: ["giro","vuelta"] }
+    "Team Picnic PostNL": { abbr: "TPP", clr: "#ff6600", r: [
+        { n: "Oscar Onley", gc: 78, bj: 82, sp: 50, tt: 78, ud: 82, re: 80, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Quinten Hermans", gc: 64, bj: 70, sp: 66, tt: 68, ud: 80, re: 76, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Dries Van Gestel", gc: 52, bj: 56, sp: 76, tt: 74, ud: 84, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Danny van Poppel", gc: 40, bj: 36, sp: 86, tt: 68, ud: 80, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Gianni Vermeersch", gc: 58, bj: 64, sp: 72, tt: 74, ud: 86, re: 82, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Mike Teunissen", gc: 52, bj: 50, sp: 76, tt: 78, ud: 86, re: 84, fl: 86, pri: "tdf", pref: ["tdf"] },
+        { n: "Oscar Riesebeek", gc: 48, bj: 50, sp: 66, tt: 76, ud: 88, re: 86, fl: 84, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Casper van Uden", gc: 40, bj: 34, sp: 86, tt: 70, ud: 78, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Pascal Eenkhoorn", gc: 54, bj: 58, sp: 68, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Julius Johansen", gc: 56, bj: 62, sp: 60, tt: 78, ud: 84, re: 82, fl: 80, pri: "giro", pref: ["giro"] },
+        { n: "Elmar Reinders", gc: 50, bj: 54, sp: 70, tt: 74, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","vuelta"] }
     ]},
     "Uno-X Mobility": { abbr: "UXT", clr: "#f9b000", r: [
-        { n: "Tobias H Johannessen", gc: 76, bj: 84, sp: 50, tt: 78, ud: 86, re: 82, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
-        { n: "Alexander Kristoff", gc: 44, bj: 38, sp: 89, tt: 74, ud: 80, re: 76, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Tobias H Johannessen", gc: 78, bj: 84, sp: 50, tt: 78, ud: 86, re: 82, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Søren Wærenskjold", gc: 48, bj: 44, sp: 72, tt: 86, ud: 88, re: 86, fl: 90, pri: "tdf", pref: ["tdf","giro"] },
         { n: "Rasmus Tiller", gc: 58, bj: 66, sp: 68, tt: 76, ud: 88, re: 84, fl: 82, pri: "tdf", pref: ["tdf","vuelta"] },
         { n: "Jonas Abrahamsen", gc: 52, bj: 62, sp: 74, tt: 72, ud: 86, re: 84, fl: 80, pri: "tdf", pref: ["tdf"] },
         { n: "Odd Christian Eiking", gc: 68, bj: 78, sp: 54, tt: 74, ud: 86, re: 80, fl: 74, pri: "vuelta", pref: ["vuelta","tdf"] },
-        { n: "Johannes Kulset", gc: 60, bj: 72, sp: 56, tt: 70, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Torstein Træen", gc: 70, bj: 80, sp: 48, tt: 76, ud: 86, re: 80, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
-        { n: "Magnus Sheffield", gc: 64, bj: 70, sp: 72, tt: 78, ud: 84, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
-        { n: "Cian Uijtdebroeks", gc: 76, bj: 84, sp: 46, tt: 80, ud: 84, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
-        { n: "Anthon Charmig", gc: 66, bj: 78, sp: 50, tt: 74, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro"] },
-        { n: "Markus Hoelgaard", gc: 54, bj: 58, sp: 68, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] }
+        { n: "Johannes Kulset", gc: 62, bj: 74, sp: 56, tt: 72, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Torstein Træen", gc: 72, bj: 80, sp: 48, tt: 76, ud: 86, re: 80, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
+        { n: "Magnus Cort", gc: 58, bj: 66, sp: 86, tt: 68, ud: 82, re: 78, fl: 80, pri: "vuelta", pref: ["vuelta","tdf"] },
+        { n: "Anthon Charmig", gc: 66, bj: 78, sp: 50, tt: 74, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Sven Erik Bystrøm", gc: 54, bj: 58, sp: 72, tt: 76, ud: 86, re: 82, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Markus Hoelgaard", gc: 54, bj: 58, sp: 68, tt: 76, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Storm Ingebrigtsen", gc: 60, bj: 68, sp: 62, tt: 74, ud: 84, re: 82, fl: 78, pri: "giro", pref: ["giro","vuelta"] }
+    ]},
+    "XDS Astana": { abbr: "XAT", clr: "#00b5e2", r: [
+        { n: "Alberto Bettiol", gc: 66, bj: 70, sp: 76, tt: 74, ud: 84, re: 80, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Christian Scaroni", gc: 72, bj: 80, sp: 48, tt: 74, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Diego Ulissi", gc: 70, bj: 76, sp: 72, tt: 74, ud: 84, re: 78, fl: 80, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Simone Velasco", gc: 62, bj: 68, sp: 74, tt: 72, ud: 84, re: 80, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Lorenzo Fortunato", gc: 68, bj: 82, sp: 44, tt: 70, ud: 86, re: 78, fl: 70, pri: "giro", pref: ["giro"] },
+        { n: "Aaron Gate", gc: 44, bj: 40, sp: 86, tt: 72, ud: 80, re: 82, fl: 82, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Matteo Malucelli", gc: 38, bj: 32, sp: 88, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro"] },
+        { n: "Harold Tejada", gc: 72, bj: 84, sp: 46, tt: 72, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Joe Dombrowski", gc: 70, bj: 82, sp: 44, tt: 74, ud: 86, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Davide Martinelli", gc: 48, bj: 46, sp: 72, tt: 70, ud: 86, re: 84, fl: 82, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Yevgeniy Fedorov", gc: 64, bj: 76, sp: 56, tt: 70, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta"] }
+    ]},
+    "NSN Cycling Team": { abbr: "NSN", clr: "#1d4289", r: [
+        { n: "Stevie Williams", gc: 70, bj: 78, sp: 52, tt: 76, ud: 84, re: 78, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Jake Stewart", gc: 54, bj: 56, sp: 78, tt: 72, ud: 82, re: 80, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Corbin Strong", gc: 52, bj: 54, sp: 80, tt: 72, ud: 82, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Ethan Vernon", gc: 44, bj: 40, sp: 84, tt: 76, ud: 80, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Hugo Hofstetter", gc: 50, bj: 52, sp: 80, tt: 68, ud: 82, re: 80, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Marco Frigo", gc: 62, bj: 72, sp: 58, tt: 70, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro"] },
+        { n: "Joe Blackmore", gc: 66, bj: 76, sp: 54, tt: 74, ud: 84, re: 80, fl: 74, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Lewis Askey", gc: 58, bj: 66, sp: 68, tt: 72, ud: 84, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Nick Schultz", gc: 66, bj: 78, sp: 48, tt: 72, ud: 86, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Alexey Lutsenko", gc: 76, bj: 80, sp: 70, tt: 78, ud: 86, re: 80, fl: 80, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Krists Neilands", gc: 64, bj: 76, sp: 56, tt: 72, ud: 86, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Simon Clarke", gc: 60, bj: 68, sp: 68, tt: 74, ud: 86, re: 78, fl: 80, pri: "giro", pref: ["giro","tdf"] }
+    ]},
+    "Team Jayco AlUla": { abbr: "JAY", clr: "#01a650", r: [
+        { n: "Ben O'Connor", gc: 82, bj: 86, sp: 46, tt: 78, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Michael Matthews", gc: 60, bj: 64, sp: 86, tt: 76, ud: 84, re: 80, fl: 86, pri: "tdf", pref: ["tdf"] },
+        { n: "Luke Plapp", gc: 74, bj: 76, sp: 58, tt: 88, ud: 84, re: 82, fl: 82, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Pascal Ackermann", gc: 38, bj: 30, sp: 91, tt: 64, ud: 76, re: 82, fl: 80, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Alessandro Covi", gc: 70, bj: 80, sp: 60, tt: 74, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Amaury Capiot", gc: 48, bj: 46, sp: 84, tt: 70, ud: 82, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Finlay Pickering", gc: 72, bj: 78, sp: 50, tt: 76, ud: 80, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Kobe Goossens", gc: 66, bj: 78, sp: 52, tt: 70, ud: 86, re: 80, fl: 72, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Filippo Conca", gc: 58, bj: 66, sp: 56, tt: 72, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] },
+        { n: "Dries De Bondt", gc: 52, bj: 54, sp: 74, tt: 76, ud: 88, re: 84, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Hamish McKenzie", gc: 62, bj: 72, sp: 54, tt: 74, ud: 82, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Callum Scotson", gc: 54, bj: 58, sp: 66, tt: 80, ud: 86, re: 84, fl: 84, pri: "giro", pref: ["giro","tdf"] }
+    ]}
+	"TotalEnergies": { abbr: "TEN", clr: "#00a651", wildcard: ["tdf"], r: [
+        { n: "Anthony Turgis", gc: 60, bj: 66, sp: 78, tt: 74, ud: 86, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Jordan Jegat", gc: 72, bj: 80, sp: 48, tt: 72, ud: 86, re: 78, fl: 72, pri: "tdf", pref: ["tdf"] },
+        { n: "Émilien Jeannière", gc: 66, bj: 72, sp: 68, tt: 72, ud: 84, re: 80, fl: 78, pri: "tdf", pref: ["tdf"] },
+        { n: "Alexandre Delettre", gc: 62, bj: 68, sp: 70, tt: 70, ud: 84, re: 80, fl: 78, pri: "tdf", pref: ["tdf"] },
+        { n: "Mathieu Burgaudeau", gc: 62, bj: 70, sp: 66, tt: 72, ud: 86, re: 82, fl: 78, pri: "tdf", pref: ["tdf"] },
+        { n: "Steff Cras", gc: 74, bj: 82, sp: 46, tt: 76, ud: 84, re: 78, fl: 72, pri: "giro", pref: ["tdf"] },
+        { n: "Pierre Latour", gc: 72, bj: 82, sp: 48, tt: 80, ud: 86, re: 78, fl: 74, pri: "tdf", pref: ["tdf"] },
+        { n: "Jason Tesson", gc: 38, bj: 30, sp: 86, tt: 64, ud: 76, re: 82, fl: 80, pri: "tdf", pref: ["tdf"] },
+        { n: "Fabien Doubey", gc: 56, bj: 66, sp: 62, tt: 70, ud: 88, re: 84, fl: 78, pri: "giro", pref: ["tdf"] },
+        { n: "Sandy Dujardin", gc: 54, bj: 62, sp: 60, tt: 72, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["tdf"] },
+        { n: "Thomas Gachignard", gc: 68, bj: 76, sp: 52, tt: 72, ud: 84, re: 80, fl: 74, pri: "tdf", pref: ["tdf"] },
+        { n: "Thibault Guernalec", gc: 60, bj: 72, sp: 54, tt: 70, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["tdf"] },
+        { n: "Lorrenzo Manzin", gc: 36, bj: 28, sp: 84, tt: 62, ud: 74, re: 80, fl: 78, pri: "tdf", pref: ["tdf"] },
+        { n: "Samuel Leroux", gc: 42, bj: 38, sp: 82, tt: 66, ud: 80, re: 82, fl: 82, pri: "tdf", pref: ["tdf"] }
+    ]},
+    "Cofidis": { abbr: "COF", clr: "#e2001a", r: [
+        { n: "Ion Izagirre", gc: 72, bj: 80, sp: 54, tt: 76, ud: 82, re: 76, fl: 72, pri: "vuelta", pref: ["vuelta","giro"] },
+        { n: "Bryan Coquard", gc: 40, bj: 32, sp: 90, tt: 62, ud: 76, re: 82, fl: 80, pri: "tdf", pref: ["tdf"] },
+        { n: "Simon Geschke", gc: 62, bj: 78, sp: 50, tt: 68, ud: 84, re: 76, fl: 70, pri: "tdf", pref: ["tdf"] },
+        { n: "Jesus Herrada", gc: 68, bj: 78, sp: 58, tt: 72, ud: 86, re: 80, fl: 76, pri: "vuelta", pref: ["vuelta","tdf"] },
+        { n: "Benjamin Thomas", gc: 56, bj: 58, sp: 70, tt: 82, ud: 86, re: 84, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Axel Laurance", gc: 64, bj: 74, sp: 62, tt: 70, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["vuelta","tdf"] },
+        { n: "Pello Bilbao", gc: 78, bj: 82, sp: 50, tt: 76, ud: 84, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Rémy Rochas", gc: 66, bj: 78, sp: 48, tt: 70, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Anthony Perez", gc: 58, bj: 70, sp: 64, tt: 66, ud: 88, re: 82, fl: 76, pri: "giro", pref: ["giro","tdf"] },
+        { n: "Stefano Oldani", gc: 56, bj: 64, sp: 68, tt: 70, ud: 84, re: 80, fl: 78, pri: "giro", pref: ["giro"] },
+        { n: "Victor Lafay", gc: 66, bj: 76, sp: 62, tt: 70, ud: 84, re: 80, fl: 76, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Harrison Wood", gc: 64, bj: 74, sp: 52, tt: 72, ud: 84, re: 80, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+        { n: "Nicolas Debeaumarché", gc: 52, bj: 60, sp: 56, tt: 72, ud: 86, re: 82, fl: 78, pri: "giro", pref: ["giro"] }
+    ]}
+	"Tudor Pro Cycling": { abbr: "TUD", clr: "#1a1a2e", r: [
+        { n: "Stefan Küng", gc: 52, bj: 50, sp: 68, tt: 94, ud: 90, re: 86, fl: 92, pri: "tdf", pref: ["tdf"] },
+        { n: "Julian Alaphilippe", gc: 68, bj: 78, sp: 76, tt: 70, ud: 76, re: 72, fl: 74, pri: "tdf", pref: ["tdf"] },
+        { n: "Marc Soler", gc: 74, bj: 82, sp: 48, tt: 76, ud: 84, re: 78, fl: 72, pri: "tdf", pref: ["tdf","vuelta"] },
+        { n: "Matteo Trentin", gc: 56, bj: 58, sp: 82, tt: 74, ud: 84, re: 80, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Sébastien Reichenbach", gc: 66, bj: 76, sp: 48, tt: 72, ud: 86, re: 80, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Alexandr Riabushenko", gc: 64, bj: 72, sp: 56, tt: 74, ud: 84, re: 80, fl: 76, pri: "tdf", pref: ["tdf"] },
+        { n: "Yannis Voisard", gc: 68, bj: 76, sp: 50, tt: 76, ud: 82, re: 78, fl: 74, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Arnaud Démare", gc: 40, bj: 30, sp: 89, tt: 64, ud: 76, re: 82, fl: 80, pri: "tdf", pref: ["tdf","giro"] },
+        { n: "Joel Suter", gc: 62, bj: 70, sp: 58, tt: 74, ud: 84, re: 80, fl: 76, pri: "tdf", pref: ["tdf"] },
+        { n: "Tom Bohli", gc: 48, bj: 46, sp: 66, tt: 84, ud: 86, re: 84, fl: 86, pri: "tdf", pref: ["tdf"] },
+        { n: "Robin Froidevaux", gc: 56, bj: 64, sp: 62, tt: 74, ud: 84, re: 82, fl: 78, pri: "tdf", pref: ["tdf"] },
+        { n: "Mauro Schmid", gc: 66, bj: 72, sp: 64, tt: 80, ud: 86, re: 82, fl: 80, pri: "tdf", pref: ["tdf","giro"] }
+    ]},
+    "Pinarello-Q36.5": { abbr: "PQT", clr: "#00cccc", r: [
+    	{ n: "Tom Pidcock", gc: 80, bj: 84, sp: 76, tt: 80, ud: 84, re: 82, fl: 82, pri: "tdf", pref: ["tdf","giro"] },
+    	{ n: "Eddie Dunbar", gc: 74, bj: 80, sp: 48, tt: 76, ud: 84, re: 78, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+    	{ n: "Sam Bennett", gc: 34, bj: 28, sp: 88, tt: 64, ud: 76, re: 80, fl: 78, pri: "giro", pref: ["giro","tdf"] },
+    	{ n: "Fred Wright", gc: 62, bj: 66, sp: 74, tt: 74, ud: 86, re: 82, fl: 82, pri: "tdf", pref: ["tdf","vuelta"] },
+    	{ n: "Quinten Hermans", gc: 64, bj: 70, sp: 66, tt: 68, ud: 80, re: 76, fl: 72, pri: "giro", pref: ["giro","tdf"] },
+    	{ n: "David de la Cruz", gc: 72, bj: 78, sp: 48, tt: 78, ud: 86, re: 78, fl: 74, pri: "giro", pref: ["giro","vuelta"] },
+    	{ n: "Chris Harper", gc: 70, bj: 78, sp: 46, tt: 74, ud: 86, re: 80, fl: 72, pri: "giro", pref: ["giro","vuelta"] },
+    	{ n: "Harm Vanhoucke", gc: 68, bj: 80, sp: 44, tt: 74, ud: 84, re: 78, fl: 70, pri: "giro", pref: ["giro","vuelta"] },
+    	{ n: "Thomas Gloag", gc: 70, bj: 76, sp: 52, tt: 74, ud: 82, re: 80, fl: 74, pri: "giro", pref: ["giro","tdf"] },
+    	{ n: "Brent Van Moer", gc: 58, bj: 62, sp: 70, tt: 82, ud: 86, re: 82, fl: 84, pri: "tdf", pref: ["tdf","giro"] },
+    	{ n: "Matteo Moschetti", gc: 38, bj: 32, sp: 86, tt: 66, ud: 78, re: 82, fl: 82, pri: "giro", pref: ["giro"] },
+    	{ n: "Xandro Meurisse", gc: 60, bj: 66, sp: 68, tt: 72, ud: 84, re: 80, fl: 80, pri: "tdf", pref: ["tdf","giro"] },
+    	{ n: "Milan Vader", gc: 62, bj: 68, sp: 66, tt: 74, ud: 82, re: 80, fl: 78, pri: "tdf", pref: ["tdf","vuelta"] }
+	]},
+    "Caja Rural-Seguros RGA": { abbr: "CJR", clr: "#00aa44", wildcard: ["tdf"], r: [
+        { n: "Fernando Gaviria", gc: 38, bj: 30, sp: 90, tt: 68, ud: 76, re: 82, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Iúri Leitão", gc: 56, bj: 60, sp: 80, tt: 76, ud: 84, re: 82, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Abel Balderstone", gc: 58, bj: 64, sp: 56, tt: 86, ud: 84, re: 82, fl: 84, pri: "tdf", pref: ["tdf"] },
+        { n: "Stefano Oldani", gc: 58, bj: 66, sp: 70, tt: 72, ud: 84, re: 80, fl: 78, pri: "tdf", pref: ["tdf"] },
+        { n: "Jon Aberasturi", gc: 40, bj: 34, sp: 86, tt: 66, ud: 78, re: 82, fl: 82, pri: "tdf", pref: ["tdf"] },
+        { n: "Jokin Murguialday", gc: 64, bj: 76, sp: 52, tt: 72, ud: 84, re: 80, fl: 74, pri: "tdf", pref: ["tdf"] },
+        { n: "Héctor Carretero", gc: 66, bj: 78, sp: 50, tt: 72, ud: 86, re: 80, fl: 72, pri: "vuelta", pref: ["tdf"] },
+        { n: "Jefferson Cepeda", gc: 72, bj: 82, sp: 44, tt: 70, ud: 82, re: 76, fl: 68, pri: "tdf", pref: ["tdf"] },
+        { n: "José Manuel Díaz", gc: 62, bj: 74, sp: 54, tt: 70, ud: 84, re: 80, fl: 74, pri: "vuelta", pref: ["tdf"] },
+        { n: "Sergio Samitier", gc: 60, bj: 72, sp: 58, tt: 68, ud: 82, re: 78, fl: 74, pri: "vuelta", pref: ["tdf"] },
+        { n: "Unai Iribar", gc: 66, bj: 76, sp: 50, tt: 74, ud: 84, re: 80, fl: 74, pri: "tdf", pref: ["tdf"] },
+        { n: "Jon Barrenetxea", gc: 64, bj: 74, sp: 60, tt: 70, ud: 82, re: 78, fl: 76, pri: "tdf", pref: ["tdf"] }
     ]}
 };
 
@@ -1140,6 +1167,7 @@ function genererFelt(gtId, spillerHoldNavn, spillerOrigNavn) {
     for (var hi = 0; hi < hn.length; hi++) {
         var holdNavn = hn[hi];
         var team = TEAMS[holdNavn];
+	    if (team.wildcard && team.wildcard.indexOf(gtId) < 0) continue;
         var trup = vaelgHoldtrup(holdNavn, gtId, G.saeson);
         var erSpillerHold = (holdNavn === spillerHoldNavn);
         
@@ -1334,7 +1362,7 @@ function visSaesonValg() {
     setGTTema("tdf"); // Neutral farve for valg
     
     var html = '<div style="text-align:center;padding:15px 0">' +
-        '<h1>SÆSON ' + G.saeson + ' (' + (2024 + G.saeson) + ')</h1>' +
+        '<h1>SÆSON ' + G.saeson + ' (' + (2025 + G.saeson) + ')</h1>' +
         '<p style="color:#888">Vælg hvilke Grand Tours du vil køre denne sæson</p>' +
         '<p style="color:#666;font-size:11px">Du kan vælge 1 eller 2 løb (maks 2)</p>' +
     '</div>';
@@ -1351,7 +1379,7 @@ function visSaesonValg() {
                 '" onclick="' + (disabled ? '' : 'toggleGTValg(\'' + gtIds[i] + '\')') + '">' +
             '<div class="gt-emoji">' + gtc.emoji + '</div>' +
             '<div class="gt-name" style="color:' + gtc.primary + '">' + gtc.navn + '</div>' +
-            '<div class="gt-date">' + gtc.maaned + ' ' + (2024 + G.saeson) + '</div>' +
+            '<div class="gt-date">' + gtc.maaned + ' ' + (2025 + G.saeson) + '</div>' +
             '<div class="gt-strength" style="color:' + gtc.primary + '">' + gtc.styrke + ' ' + gtc.styrkeTekst + '</div>' +
             (selected ? '<div style="color:#0f0;margin-top:5px;font-weight:bold">✓ VALGT</div>' : '') +
         '</div>';
@@ -2069,7 +2097,7 @@ function afslutSaeson() {
 
 function visSaesonOversigt() {
     var html = '<div style="text-align:center;padding:15px 0">' +
-        '<h1>SÆSON ' + G.saeson + ' (' + (2024 + G.saeson) + ') AFSLUTTET</h1>' +
+        '<h1>SÆSON ' + G.saeson + ' (' + (2025 + G.saeson) + ') AFSLUTTET</h1>' +
     '</div>';
     
     // Vis resultater fra hver GT
