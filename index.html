@@ -2829,7 +2829,7 @@ function visRes(res, erTT, udeRyttere, vinderTid, tidsGraense) {
         html += '<div class="ctrls ctrls-3">' +
             '<button class="btn btn-big btn-y" onclick="visAlleResultater()">📋 ALLE</button>' +
             '<button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="visResume()">📰 REFERAT</button>' +
-            '<button class="btn btn-big" onclick="samlet()">STILLING</button>' +
+            '<button class="btn btn-big" onclick="samlet()">STILLING →</button>' +
         '</div>';
     } else {
         html += '<div class="ctrls ctrls-3">' +
@@ -3184,7 +3184,8 @@ function addStat(stat) {
 // ========== TILPASSET ETAPEOVERSIGT ==========
 
 function visEtapeOversigt() {
-    var html = '<h2>📋 ETAPEOVERSIGT - Tour ' + G.tourNr + '</h2>';
+    var gt = getGT();
+	var html = '<h2>📋 ETAPEOVERSIGT - ' + gt.navn + ' ' + gt.aar() + '</h2>';
     html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">21 etaper · ' + G.etaper.reduce(function(sum, e) { return sum + e.dist; }, 0) + ' km total</div>';
     
     html += '<div id="etapeScrollContainer" class="box" style="max-height:450px;overflow-y:auto">';
@@ -3202,8 +3203,8 @@ function visEtapeOversigt() {
         var marker = '';
         var scrollId = '';
         if (erKommende) {
-            rowStyle = 'background:linear-gradient(90deg,#330 0%,#110 100%);border:2px solid #ff0;';
-            marker = ' <span style="color:#ff0;font-weight:bold">◄ NÆSTE</span>';
+			rowStyle = 'background:linear-gradient(90deg,' + gt.primary + '22 0%,#110 100%);border:2px solid ' + gt.primary + ';';
+			marker = ' <span style="color:' + gt.primary + ';font-weight:bold">◄ NÆSTE</span>';
             scrollId = ' id="naeste-etape-marker"';
         } else if (erAktuel) {
             rowStyle = 'background:linear-gradient(90deg,#220 0%,#110 100%);border:2px solid #aa0;';
@@ -3313,11 +3314,12 @@ function getPlotFarve(type) {
 }
 
 function visAlleGC() {
+    var gt = getGT();
     var aktive = G.ryttere.filter(function(r) { return !r.ude; });
     var gcS = aktive.slice().sort(function(a,b) { return a.stid - b.stid; });
     var fTid = gcS[0] ? gcS[0].stid : 0;
     
-    var html = '<h2>🟡 SAMLET STILLING - ALLE</h2>';
+    var html = '<h2>' + gt.gcEmoji + ' SAMLET STILLING - ALLE</h2>';
     html += '<div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">Efter etape ' + (G.enr + 1) + '</div>';
     
     html += '<div class="box" style="max-height:400px;overflow-y:auto"><h3>Komplet klassement:</h3>';
@@ -3329,14 +3331,14 @@ function visAlleGC() {
         var tidTxt = pos === 1 ? ft(r.stid) : '+' + ft(r.stid - fTid);
         var med = "";
         var visTal = true;
-        if (pos === 1) { med = "🟡 "; visTal = false; }
+        if (pos === 1) { med = gt.gcEmoji + " "; visTal = false; }
         var numTxt = visTal ? pos + '. ' : '';
         html += '<div class="' + cls + '"><span>' + med + numTxt + r.navn + ' <span style="color:' + r.holdClr + '">' + r.holdAbbr + '</span></span>' +
                 '<span>' + tidTxt + '</span></div>';
     }
     html += '</div>';
     
-    html += '<div class="ctrls ctrls-2"><button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="samlet()">← TILBAGE</button></div>';
+    html += '<div class="ctrls ctrls-2"><button class="btn btn-big" style="border-color:#3399ff;color:#3399ff" onclick="samlet()">TILBAGE</button></div>';
     
     R(html);
 }
@@ -3798,7 +3800,8 @@ gh += '<div style="' + boxStyle + '">' +
 var mpRes = "";
 if (G.lastMpResult) {
     var mpr = G.lastMpResult;
-    var icon = mpr.type === "sprint" ? "🟢" : "🔴";
+    var gt2 = getGT();
+	var icon = mpr.type === "sprint" ? gt2.spEmoji : gt2.bjEmoji;
     var items = "";
     for (var i = 0; i < mpr.top10.length; i++) {
         var x = mpr.top10[i];
@@ -6407,7 +6410,8 @@ function chkMP() {
         for (var i = 0; i < pointModtagere; i++) {
             if (alleRyttere[i].r.sp) { spi = i; break; }
         }
-        var em = mp.type === "sprint" ? "🟢 SPRINT" : "🔴 BJERG";
+        var gt = getGT();
+		var em = mp.type === "sprint" ? gt.spEmoji + " SPRINT" : gt.bjEmoji + " BJERG";
         
         if (spi >= 0) {
             G.msg = em + ": Du blev nr. " + (spi + 1) + "! (+" + mp.pts[spi] + " pts)";
