@@ -2852,9 +2852,9 @@ function samlet() {
     
     var fTid = gcS[0] ? gcS[0].stid : 0;
     var data, titel;
-    if (G.stilTab === "gc") { data = gcS; titel = "🟡 SAMLET"; }
-    else if (G.stilTab === "sp") { data = spS; titel = "🟢 SPRINT"; }
-    else { data = bjS; titel = "🔴 BJERG"; }
+	if (G.stilTab === "gc") { data = gcS; titel = gt.gcEmoji + " SAMLET"; }
+	else if (G.stilTab === "sp") { data = spS; titel = gt.spEmoji + " SPRINT"; }
+	else { data = bjS; titel = gt.bjEmoji + " BJERG"; }
     
     var spi = -1;
     for (var i = 0; i < data.length; i++) { if (data[i].sp) { spi = i; break; } }
@@ -2887,19 +2887,11 @@ if (maxBjPts > 0 && bjS.length > 0) {
     bjTopTxt = " (" + maxBjPts + ")";
 }
 
-var html = '<h2>STILLING - Etape ' + (G.enr + 1) + '</h2>' +
-'<div class="jerseys">' +
-    '<div class="jersey jy">🟡 ' + (gcS[0] ? gcS[0].navn.split(" ").pop() : "-") + '</div>' +
-    '<div class="jersey jg">🟢 ' + spNavn + spTopTxt + '</div>' +
-    '<div class="jersey jp">🔴 ' + bjNavn + bjTopTxt + '</div>' +
-'</div>' +
-    (udeAntal > 0 ? '<p style="text-align:center;color:#f44;font-size:11px">' + udeAntal + ' rytter' + (udeAntal > 1 ? 'e' : '') + ' ude af løbet</p>' : '') +
-    '<div class="tabs">' +
-    '<div class="tab tab-gc ' + (G.stilTab==='gc'?'active':'') + '" onclick="G.stilTab=\'gc\';samlet()">🟡 Samlet</div>' +
-    '<div class="tab tab-sp ' + (G.stilTab==='sp'?'active':'') + '" onclick="G.stilTab=\'sp\';samlet()">🟢 Sprint</div>' +
-    '<div class="tab tab-bj ' + (G.stilTab==='bj'?'active':'') + '" onclick="G.stilTab=\'bj\';samlet()">🔴 Bjerg</div>' +
-'</div>' +
-    '<div class="box"><h3>' + titel + '</h3>';
+	var html = '<h2>STILLING - Etape ' + (G.enr + 1) + '</h2>';
+	html += jerseyHtml(gcS, spS, bjS);
+	html += (udeAntal > 0 ? '<p style="text-align:center;color:#f44;font-size:11px">' + udeAntal + ' rytter' + (udeAntal > 1 ? 'e' : '') + ' ude af løbet</p>' : '');
+	html += getStillingTabs();
+	html += '<div class="box"><h3>' + titel + '</h3>';
     
     for (var i = 0; i < Math.min(15, data.length); i++) {
         var r = data[i];
@@ -2959,9 +2951,9 @@ function slut() {
     
     var fTid = gcS[0] ? gcS[0].stid : 0;
     var data, titel;
-    if (G.stilTab === "gc") { data = gcS; titel = "🟡 SAMLET KLASSEMENT"; }
-    else if (G.stilTab === "sp") { data = spS; titel = "🟢 POINTKONKURRENCEN"; }
-    else { data = bjS; titel = "🔴 BJERGKONKURRENCEN"; }
+	if (G.stilTab === "gc") { data = gcS; titel = gt.gcEmoji + " SAMLET KLASSEMENT"; }
+	else if (G.stilTab === "sp") { data = spS; titel = gt.spEmoji + " " + gt.spNavn.toUpperCase(); }
+	else { data = bjS; titel = gt.bjEmoji + " " + gt.bjNavn.toUpperCase(); }
     
     var spiGC = -1;
     for (var i = 0; i < gcS.length; i++) { if (gcS[i].sp) { spiGC = i; break; } }
